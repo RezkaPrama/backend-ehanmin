@@ -9,6 +9,7 @@
 @endsection
 
 @section('content')
+
 @component('components.breadcrumb')
 @slot('li_1') User @endslot
 @slot('title') Manajemen User @endslot
@@ -116,11 +117,12 @@
                                                         id="checkboxesMain" />
                                                 </div>
                                             </th> --}}
-                                            <th>User Id</th>
-                                            <th>User name</th>
-                                            <th>Password</th>
-                                            <th>User Role</th>
-                                            <th>Cabang</th>
+                                            <th class="text-center">User Id</th>
+                                            <th class="text-center">User name</th>
+                                            <th class="text-center">NIK User</th>
+                                            <th class="text-center">User Role</th>
+                                            <th class="text-center">Cabang</th>
+                                            <th class="text-center">Foto Profil</th>
                                             <th class="text-end">Action</th>
                                         </tr>
                                     </thead>
@@ -134,11 +136,14 @@
                                                         />
                                                 </div>
                                             </td> --}}
-                                            <td>{{ $member->id }}</td>
-                                            <td>{{ $member->name }}</td>
-                                            <td>{{ $member->password }}</td>
-                                            <td><span class="badge bg-success font-size-12"><i class="mdi mdi-star me-1"></i>{{ $member->role }}</span></td>
-                                            <td>{{ $member->cabang }}</td>
+                                            <td class="text-center">{{ $member->id }}</td>
+                                            <td class="text-center">{{ $member->name }}</td>
+                                            <td class="text-center">{{ $member->nik }}</td>
+                                            <td class="text-center"><span class="badge bg-success font-size-12"><i class="mdi mdi-star me-1"></i>{{ $member->role }}</span></td>
+                                            <td class="text-center">{{ $member->cabang }}</td>
+                                            <td class="text-center">
+                                                <img class="rounded-circle header-profile-user" src="{{ (isset($member->avatar) && $member->avatar != '')  ? url('/storage/users/'. $member->avatar ) : asset('/assets/images/users/avatar-1.jpeg') }}" alt="Header Avatar">
+                                            </td>
                                             <td class="text-end">
                                                 <div class="dropdown">
                                                     <a class="btn btn-link text-body shadow-none dropdown-toggle" href="#"

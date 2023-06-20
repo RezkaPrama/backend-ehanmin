@@ -53,6 +53,19 @@
 
                                 @error('name')
                                 <div class="invalid-feedback" style="display: block">
+                                    Kolom Nama lengkap harus di isi!
+                                </div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="nik">NIK</label>
+                                <input id="nik" name="nik" placeholder="Masukan NIK" type="text"
+                                    class="form-control @error('nik') is-invalid @enderror">
+
+                                @error('nik')
+                                <div class="invalid-feedback" style="display: block">
+                                    {{-- Kolom NIK harus di isi! --}}
                                     {{ $message }}
                                 </div>
                                 @enderror
@@ -73,7 +86,7 @@
 
                                         @error('satuans_id')
                                         <div class="invalid-feedback" style="display: block">
-                                            {{ $message }}
+                                            Kolom Cabang Satuan harus di isi!
                                         </div>
                                         @enderror
                                     </div>
@@ -92,7 +105,7 @@
 
                                         @error('role')
                                         <div class="invalid-feedback" style="display: block">
-                                            {{ $message }}
+                                            Kolom User Role harus di isi!
                                         </div>
                                         @enderror
                                     </div>
@@ -121,7 +134,7 @@
 
                                         @error('password')
                                         <div class="invalid-feedback" style="display: block">
-                                            {{ $message }}
+                                            Kolom Password harus di isi!
                                         </div>
                                         @enderror
                                     </div>

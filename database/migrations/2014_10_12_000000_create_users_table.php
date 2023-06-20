@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->bigInteger('nik')->unique();
             $table->bigInteger('satuans_id')->unsigned();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -27,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-        DB::table('users')->insert(array('name'=>'admin', 'satuans_id' => 1, 'email'=>'rezkaprama@gmail.com', 'avatar' => '', 'role' => 'Admin', 'password'=>Hash::make('123456')));
+        DB::table('users')->insert(array('name'=>'admin', 'satuans_id' => 1, 'nik' => 3204082311900001, 'email'=>'rezkaprama@gmail.com', 'avatar' => '', 'role' => 'Admin', 'password'=>Hash::make('123456')));
     }
 
     /**

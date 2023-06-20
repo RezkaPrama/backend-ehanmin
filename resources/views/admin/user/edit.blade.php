@@ -52,6 +52,19 @@
                                 @enderror
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label" for="nik">NIK</label>
+                                <input id="nik" name="nik" placeholder="Masukan NIK" type="text" value="{{ old('nik', $user->nik) }}"
+                                    class="form-control @error('nik') is-invalid @enderror">
+
+                                @error('nik')
+                                <div class="invalid-feedback" style="display: block">
+                                    {{-- Kolom NIK harus di isi! --}}
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
                             <div class="row">
                                 <div class="col-lg-6">
 

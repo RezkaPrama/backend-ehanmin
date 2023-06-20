@@ -46,7 +46,9 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'name'          => 'required',
-            'email'         => 'required|email|unique:users',
+            // 'email'         => 'required|email|unique:users',
+            'email'         => 'required|unique:users,email,message:email anda sudah terdaftar',
+            'nik'           => 'required|unique:users,nik,message:NIK anda sudah terdaftar',
             'password'      => 'required|confirmed',
             'satuans_id'    => 'required',
             'role'          => 'required',
@@ -61,6 +63,7 @@ class UserController extends Controller
         $user = User::create([
             'name'          => $request->input('name'),
             'email'         => $request->input('email'),
+            'nik'           => $request->input('nik'),
             'password'      => bcrypt($request->input('password')),
             'satuans_id'    => $request->input('satuans_id'),
             'avatar'        => $avatar->hashName(),
@@ -113,6 +116,7 @@ class UserController extends Controller
         $this->validate($request, [
             'name'          => 'required',
             'email'         => 'required|email',
+            'nik'           => 'required',
             'password'      => 'required|confirmed',
             'satuans_id'    => 'required',
             'role'          => 'required',
@@ -125,6 +129,7 @@ class UserController extends Controller
             $user->update([
                 'name'          => $request->input('name'),
                 'email'         => $request->input('email'),
+                'nik'           => $request->input('nik'),
                 'password'      => bcrypt($request->input('password')),
                 'satuans_id'    => $request->input('satuans_id'),
                 'role'          => $request->input('role'),
@@ -141,6 +146,7 @@ class UserController extends Controller
             $user->update([
                 'name'      => $request->input('name'),
                 'email'     => $request->input('email'),
+                'nik'       => $request->input('nik'),
                 'password'  => bcrypt($request->input('password')),
                 'cabang'    => $request->input('cabang'),
                 'avatar'    => $avatar->getClientOriginalName(),
