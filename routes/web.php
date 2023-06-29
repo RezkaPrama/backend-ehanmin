@@ -37,7 +37,6 @@ Route::prefix('admin')->group(function () {
         Route::resource('/user', UserController::class, ['as' => 'admin']);
         Route::get('/user/{userId}', [UserController::class, 'showImage'])->name('admin.user.showImage');
 
-
         //route Satuan
         Route::resource('/satuan', SatuanController::class, ['as' => 'admin']);
 

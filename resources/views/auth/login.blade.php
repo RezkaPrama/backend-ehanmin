@@ -1,6 +1,6 @@
 @extends('layouts.master-without_nav')
 
-@section('title')Sign In E-Hanmin @endsection
+@section('title')Sign In E-Minkatmil @endsection
 
 @section('content')
 
@@ -12,16 +12,14 @@
                 <div class="col-md-8 col-lg-6 col-xl-5">
 
                     <div class="text-center mb-4">
-                        <a href="index">
                             <img src="{{ URL::asset('assets/images/logo-sm.svg') }}" alt="" height="22"> <span
-                                class="logo-txt">E-Hanmin</span>
-                        </a>
+                                class="logo-txt">E-Minkatmil</span>
                     </div>
 
                     <div class="card">
                         <div class="card-body p-4">
                             <div class="text-center mt-2">
-                                <h5 class="text-primary">Selamat Datang di Aplikasi e-hanmin!</h5>
+                                <h5 class="text-primary">Selamat Datang di Aplikasi E-Minkatmil!</h5>
                                 <p class="text-muted">Silahkan Sign In.</p>
                             </div>
                             <div class="p-2 mt-4">
@@ -35,16 +33,6 @@
                                     @csrf
 
                                     <div class="mb-3">
-                                        {{-- <label class="form-label" for="username">Email</label>
-                                        <input name="email" type="email"
-                                            class="form-control @error('email') is-invalid @enderror" id="username"
-                                            value="{{ old('email', 'rezkaprama@gmail.com') }}" placeholder="Enter Email"
-                                            autocomplete="email" autofocus>
-                                        @error('email')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror --}}
                                         <label class="form-label" for="email">Email atau NIK</label>
                                         <input type="text" name="email" value="{{ old('email') }}"
                                             class="form-control @error('email') is-invalid @enderror" id="email"
@@ -67,7 +55,7 @@
                                         <label class="form-label" for="userpassword">Password</label>
                                         <input type="password" name="password"
                                             class="form-control  @error('password') is-invalid @enderror"
-                                            id="userpassword" value="123456" placeholder="Enter password"
+                                            id="userpassword" placeholder="Enter password"
                                             aria-label="Password" aria-describedby="password-addon">
                                         @error('password')
                                         <span class="invalid-feedback" role="alert">
@@ -102,7 +90,7 @@
                         <script>
                             document.write(new Date().getFullYear())
 
-                        </script> E-Hanmin.</p>
+                        </script> E-Minkatmil.</p>
                     </div>
                 </div>
             </div>

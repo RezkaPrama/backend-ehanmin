@@ -1,6 +1,6 @@
 @extends('layouts.master-without_nav')
 
-@section('title') Forgo Password @endsection
+@section('title') Forgot Password @endsection
 
 @section('content')
 
@@ -12,15 +12,13 @@
                 <div class="col-md-8 col-lg-6 col-xl-5">
 
                     <div class="text-center mb-4">
-                        <a href="index">
-                            <img src="{{ URL::asset('assets/images/logo-sm.svg') }}" alt="" height="22"> <span
-                                class="logo-txt">E-Hanmin</span>
-                        </a>
+                        <img src="{{ URL::asset('assets/images/logo-sm.svg') }}" alt="" height="22"> <span
+                            class="logo-txt">E-Minkatmil</span>
                     </div>
 
                     <div class="card">
                         <div class="card-body p-4">
-                            
+
                             @if (session('status'))
                             <div class="alert alert-success" role="alert">
                                 {{ session('status') }}
@@ -29,7 +27,7 @@
 
                             <div class="text-center mt-2">
                                 <h5 class="text-primary">Update Password</h5>
-                                <p class="text-muted">Update Password E-Hanmin.</p>
+                                <p class="text-muted">Update Password E-Minkatmil.</p>
                             </div>
                             <div class="p-2 mt-4">
                                 <form method="POST" action="{{ route('password.update') }}">
@@ -92,7 +90,7 @@
                     <div class="text-center text-muted p-4">
                         <p class="text-white-50">© <script>
                                 document.write(new Date().getFullYear())
-                            </script> E-Hanmin</p>
+                            </script> E-Minkatmil</p>
                     </div>
                 </div>
             </div>
