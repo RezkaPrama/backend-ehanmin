@@ -18,7 +18,7 @@ class CreateTransUsulansTable extends Migration
             $table->bigInteger('nik');
             $table->string('nama');
             $table->date('tanggal_usulan');
-            $table->integer('periode');
+            $table->string('periode');
             $table->integer('tahun');
             $table->bigInteger('satuans_id')->unsigned();
             $table->bigInteger('jenis_kenaikan_id')->unsigned();

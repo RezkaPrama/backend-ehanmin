@@ -6,6 +6,7 @@
 <link href="{{ URL::asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css">
 <!-- Sweet Alert-->
 <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ URL::asset('assets/libs/choices.js/choices.js.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 
 @section('content')
@@ -18,36 +19,69 @@
     <div class="col-lg-12">
         <div class="card">
 
-            <!-- card-header default start// -->
-            <div class="card-body">
-                <div class="position-relative">
-                    <div class="modal-button mt-2">
-                        <div class="row align-items-start">
-                            <div class="col-sm">
-                                <div>
-                                    {{-- button modal --}}
-                                    {{-- <button type="button" class="btn btn-success mb-4" data-bs-toggle="modal"
-                                        data-bs-target="#addUsulanModal"><i class="mdi mdi-plus me-1"></i> Tambah Usulan
-                                    </button> --}}
+            <div class="card-header">
+                <form action="{{ route('admin.trans.index') }}" method="GET">
 
-                                    <a href="{{ route('admin.trans.create') }}" class="btn btn-success mb-4"><i
-                                        class="mdi mdi-plus me-1"></i> Tambah</a>
-                                </div>
-                            </div>
+                    <div class="mb-3 row">
+                        <label for="horizontal-firstname-input" class="col-sm-2 col-form-label">NIK/NRP</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="nik" name="nik" placeholder="Masukan data NIK">
                         </div>
-                        <!-- end row -->
                     </div>
-                </div>
 
-                {{-- table advance javascript --}}
-                {{-- <div id="table-users-list"></div> --}}
-                {{-- table advance javascript --}}
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Instansi</label>
+                        <div class="col-sm-4">
+                            <select class="form-control " data-trigger id="satuans_id" name="satuans_id">
+                                {{-- <option value="">Pilih Satuan</option> --}}
+                                <option value="">Semua Instansi</option>
+                                @foreach ($satuans as $satuan)
+                                <option value="{{ $satuan->id }}">{{ $satuan->nama_instansi }} - {{ $satuan->nama_satuan
+                                    }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Jenis KP</label>
+                        <div class="col-sm-4">
+                            <select class="form-control " data-trigger name="jenis_kenaikan_id" id="jenis_kenaikan_id">
+                                <option value="">Semua Jenis KP</option>
+                                <option value="2">UKP Penghargaan</option>
+                                <option value="1">UKP Reguler</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label for="example-week-input" class="col-md-2 col-form-label">Tanggal Usulan</label>
+                        <div class="col-sm-2">
+                            <input id="tanggal_usulan_dari" name="tanggal_usulan_dari" placeholder="Filter Tanggal Usulan" type="text" class="form-control flatpickr-input">
+                        </div>
+                        <div class="col-sm-2">
+                            <input id="tanggal_usulan_sampai" name="tanggal_usulan_sampai" placeholder="Filter Tanggal Usulan" type="text" class="form-control flatpickr-input">
+                        </div>
+                        <button type="submit" class="btn btn-success mb-4 col-sm-2 me-1"><i class="mdi mdi-filter me-1"></i>
+                            Filter</button>
+                        <button type="submit" class="btn btn-success mb-4 col-sm-2 "><i class="mdi mdi-microsoft-excel me-1"></i>
+                            Export</button>
+                    </div>
+                    <div class="text-end">
+                        <a href="{{ route('admin.trans.create') }}" class="btn btn-success mb-4"><i
+                                class="mdi mdi-plus me-1"></i> Tambah Input Usulan</a>
+                    </div>
+                </form>
             </div>
+
+            <!-- card-header default start// -->
+            {{-- <div class="card-body">
+
+            </div> --}}
             <!-- card-header default end// -->
 
             <!-- card-body start// -->
-            <div class="card-body mt-4">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
@@ -68,7 +102,7 @@
                                             <th style="width:120px;">Tanggal Usulan</th>
                                             <th>Periode</th>
                                             <th>Tahun</th>
-                                            <th >Instansi</th>
+                                            <th>Instansi</th>
                                             <th>Jenis KP</th>
                                             <th>ke Pangkat</th>
                                             <th>Status</th>
@@ -94,29 +128,35 @@
                                             <td>{{ $row->satuans->nama_instansi }}</td>
                                             <td>{{ $row->jenisKenaikan->jenis_kenaikan }}</td>
                                             <td>
-                                                <span class="badge bg-success font-size-12"><i class="mdi mdi-check me-1"></i>{{ $row->ke_pangkat }}</span>
+                                                <span class="badge bg-success font-size-12"><i
+                                                        class="mdi mdi-check me-1"></i>{{ $row->ke_pangkat }}</span>
                                             </td>
                                             @if ($row->status == 'Selesai Input')
-                                                <td>
-                                                    <span class="badge bg-info font-size-12"><i class="mdi mdi-check me-1"></i>{{ $row->status }}</span>
-                                                </td>
+                                            <td>
+                                                <span class="badge bg-info font-size-12"><i
+                                                        class="mdi mdi-check me-1"></i>{{ $row->status }}</span>
+                                            </td>
                                             @endif
                                             @if ($row->status == 'Meminta Persetujuan')
-                                                <td>
-                                                    <span class="badge bg-secondary font-size-12"><i class="mdi mdi-bookmark-minus"></i> {{ $row->status }}</span>
-                                                </td>
+                                            <td>
+                                                <span class="badge bg-secondary font-size-12"><i
+                                                        class="mdi mdi-bookmark-minus"></i> {{ $row->status }}</span>
+                                            </td>
                                             @endif
                                             @if ($row->status == 'Di Setujui')
-                                                <td>
-                                                    <span class="badge bg-success font-size-12"><i class="mdi mdi-star me-1"></i> {{ $row->status }}</span>
-                                                </td>
+                                            <td>
+                                                <span class="badge bg-success font-size-12"><i
+                                                        class="mdi mdi-star me-1"></i> {{ $row->status }}</span>
+                                            </td>
                                             @endif
                                             @if ($row->status == 'Di Tolak')
-                                                <td>
-                                                    <span class="badge bg-danger font-size-12"><i class="mdi mdi-bookmark-remove me-1"></i> {{ $row->status }}</span>
-                                                </td>
+                                            <td>
+                                                <span class="badge bg-danger font-size-12"><i
+                                                        class="mdi mdi-bookmark-remove me-1"></i> {{ $row->status
+                                                    }}</span>
+                                            </td>
                                             @endif
-                                          
+
 
                                             <td>{{ $row->keterangan }}</td>
                                             <td class="text-center">
@@ -334,6 +374,9 @@
 <script src="{{ URL::asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
 <script src="{{ URL::asset('assets/js/app.js') }}"></script>
 
+<script src="{{ URL::asset('assets/libs/choices.js/choices.js.min.js') }}"></script>
+<script src="{{ URL::asset('assets/js/pages/ecommerce-choices.init.js') }}"></script>
+
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -433,13 +476,13 @@
 </script>
 
 <script>
-    flatpickr('#tanggal_usulan', {
+    flatpickr('#tanggal_usulan_dari', {
     altInput: true,
     altFormat: "F j, Y",
     dateFormat: "Y-m-d",
     });
 
-    flatpickr('#tahun', {
+    flatpickr('#tanggal_usulan_sampai', {
     altInput: true,
     altFormat: "F j, Y",
     dateFormat: "Y-m-d",

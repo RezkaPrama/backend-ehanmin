@@ -76,7 +76,7 @@
 
                                         <label class="form-label" for="tanggal_usulan"> Tanggal Usulan</label>
                                         <input id="tanggal_usulan" name="tanggal_usulan"
-                                            placeholder="Masukan Nama Satuan" type="text"
+                                            placeholder="Masukan Tanggal Usulan" type="text"
                                             class="form-control flatpickr-input @error('tanggal_usulan') is-invalid @enderror">
 
                                         @error('tanggal_usulan')
@@ -92,35 +92,25 @@
 
                                     <div class="mb-3">
                                         <label class="form-label" for="periode"> Periode</label>
-                                        <input id="periode" name="periode" placeholder="Masukan periode" type="number"
-                                            class="form-control @error('periode') is-invalid @enderror">
+                                        <select class="form-control @error('periode') is-invalid @enderror"
+                                            data-trigger name="periode" id="periode">
+                                            <option value="">Pilih Periode</option>
+                                            <option value="1 April (1-4)">1 April (1-4)</option>
+                                            <option value="1 Oktober (1-10)">1 Oktober (1-10)</option>
+                                        </select>
 
                                         @error('periode')
-                                        <div class="invalid-feedback" style="display: block">
-                                            periode harus terisi
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                {{-- <div class="col-lg-3">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="tahun"> Tahun</label>
-                                        <input type="text" class="form-control" name="datepicker" id="datepicker" />
-
-                                        @error('tahun')
                                         <div class="invalid-feedback" style="display: block">
                                             {{ $message }}
                                         </div>
                                         @enderror
                                     </div>
-                                </div> --}}
+                                </div>
+
                                 <div class="col-lg-3">
                                     <div class="mb-3">
                                         <label class="form-label" for="tahun"> Tahun</label>
                                         <input type="text" id="datepicker" name="datepicker" placeholder="Masukan tahun" class="form-control @error('tahun') is-invalid @enderror" />
-                                        {{-- <input id="tahun" name="tahun" placeholder="Masukan tahun" type="text"
-                                            class="form-control @error('tahun') is-invalid @enderror"> --}}
 
                                         @error('tahun')
                                         <div class="invalid-feedback" style="display: block">
@@ -174,7 +164,7 @@
                                         <label for="choices-single-specifications" class="form-label">ke Pangkat</label>
                                         <select class="form-control @error('ke_pangkat') is-invalid @enderror"
                                             data-trigger name="ke_pangkat" id="ke_pangkat">
-                                            <option value="">Select</option>
+                                            <option value="">Pilih Pangkat</option>
                                             <option value="Lettu">Lettu</option>
                                             <option value="Kapten">Kapten</option>
                                             <option value="Mayor">Mayor</option>

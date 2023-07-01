@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
+        eloquentFilter\ServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -232,6 +233,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
+        'EloquentFilter' => eloquentFilter\Facade\EloquentFilter::class,
 
     ],
 

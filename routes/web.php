@@ -45,6 +45,7 @@ Route::prefix('admin')->group(function () {
 
         //route input usulan 
         Route::resource('/trans', InputUsulanController::class, ['as' => 'admin']);
+        Route::get('/trans/filter', [InputUsulanController::class, 'filter'])->name('admin.trans.filter');
         Route::get('/trans/updateStatus/{id}', [InputUsulanController::class, 'updateStatus'])->name('admin.trans.updateStatus');
         Route::get('/trans/approve/{id}', [InputUsulanController::class, 'approve'])->name('admin.trans.approve');
         Route::get('/trans/decline/{id}', [InputUsulanController::class, 'decline'])->name('admin.trans.decline');

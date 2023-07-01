@@ -1,0 +1,7 @@
+build:
+    tests:
+        override:
+            -
+                coverage:
+                    file: 'tests/coverage.xml'
+                    format: 'clover'

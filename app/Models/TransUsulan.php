@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use eloquentFilter\QueryFilter\ModelFilters\Filterable as Filterable;
 
 class TransUsulan extends Model
 {
-    use HasFactory;
+    use Filterable;
+
+    private static $whiteListFilter =['*'];
 
     /**
      * guarded

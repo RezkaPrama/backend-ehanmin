@@ -93,13 +93,16 @@
 
                             <div class="mb-3">
                                 <label class="form-label" for="periode"> Periode</label>
-                                <input id="periode" name="periode" placeholder="Masukan periode" type="number"
-                                    value="{{ old('trans', $trans->periode) }}"
-                                    class="form-control @error('periode') is-invalid @enderror">
+                                <select class="form-control @error('periode') is-invalid @enderror" data-trigger name="periode" id="periode">
+                                    <option value="">Pilih Periode</option>
+                                    <option value="1 April (1-4)" {{ $trans->periode == '1 April (1-4)' ? 'selected' : '' }}>1 April (1-4)</option>
+                                    <option value="1 Oktober (1-10)" {{ $trans->periode == '1 Oktober (1-10)' ? 'selected' : '' }}>1 Oktober (1-10)</option>
+                                    
+                                </select>
 
                                 @error('periode')
                                 <div class="invalid-feedback" style="display: block">
-                                    periode harus terisi
+                                    {{ $message }}
                                 </div>
                                 @enderror
                             </div>
@@ -299,7 +302,7 @@
                             </tbody><!-- end tbody -->
                         </table><!-- end table -->
                     </div>
-                    
+
                 </div>
             </div>
 
@@ -397,7 +400,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css"
+    rel="stylesheet" />
 
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> --}}
 <script>

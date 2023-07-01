@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Filters\NikFilter;
+use App\Filters\SatuanFilter;
 use App\Http\Controllers\Controller;
 use App\Models\FileUsulan;
 use App\Models\FileUsulanDetail;
@@ -19,11 +21,27 @@ class InputUsulanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $trans = TransUsulan::latest()->when(request()->q, function ($jenis) {
-            $jenis = $jenis->where('id', 'like', '%' . request()->q . '%');
-        })->paginate(10);
+        $query = TransUsulan::query();
+
+        if ($request->has('nik')) {
+            $query->orWhere('nik', $request->input('nik'));
+        }
+
+        if ($request->has('satuans_id')) {
+            $query->orWhere('satuans_id', $request->input('satuans_id'));
+        }
+
+        if ($request->has('jenis_kenaikan_id')) {
+            $query->orWhere('jenis_kenaikan_id', $request->input('jenis_kenaikan_id'));
+        }
+
+        if ($request->has('tanggal_usulan_dari') && $request->has('tanggal_usulan_sampai')) {
+            $query->orWhereBetween('tanggal_usulan', [$request->input('tanggal_usulan_dari'), $request->input('tanggal_usulan_sampai')]);
+        }
+
+        $trans = $query->paginate(10);
 
         $satuans = Satuan::all();
 
@@ -113,7 +131,7 @@ class InputUsulanController extends Controller
         $jenis_kenaikan = JenisKenaikan::latest()->get();
 
         $fileUsulan = FileUsulan::where('jenis_kenaikan_id', $trans->jenis_kenaikan_id)
-                                ->where('ke_pangkat', $trans->ke_pangkat)->get();
+            ->where('ke_pangkat', $trans->ke_pangkat)->get();
 
         $fileUsulanDetail = DB::table('file_usulan_details')
             ->select('*')
@@ -163,10 +181,9 @@ class InputUsulanController extends Controller
         } else {
             return redirect()->back()->with(['error' => 'Data Gagal Di Update!']);
         }
-        
     }
 
-     /**
+    /**
      * update status the specified resource from storage.
      *
      * @param  int  $id
@@ -186,8 +203,8 @@ class InputUsulanController extends Controller
             return redirect()->back()->with(['error' => 'Data Gagal Di Update!']);
         }
     }
-    
-     /**
+
+    /**
      * update status the specified resource from storage.
      *
      * @param  int  $id
@@ -208,7 +225,7 @@ class InputUsulanController extends Controller
         }
     }
 
-     /**
+    /**
      * update status the specified resource from storage.
      *
      * @param  int  $id

@@ -19,7 +19,7 @@ class TransUsulanSeeder extends Seeder
                 'nik' => '320231190000' . $i,
                 'nama' => 'Fulan ' . $i ,
                 'tanggal_usulan' => '2023-06-02',
-                'periode' => $i,
+                'periode' => '1 April (1-4)',
                 'tahun' => '2023',
                 'satuans_id' => 1,
                 'jenis_kenaikan_id' => 1,
