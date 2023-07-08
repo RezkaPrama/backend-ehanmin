@@ -64,8 +64,8 @@
                         </div>
                         <button type="submit" class="btn btn-success mb-4 col-sm-2 me-1"><i class="mdi mdi-filter me-1"></i>
                             Filter</button>
-                        <button type="submit" class="btn btn-success mb-4 col-sm-2 "><i class="mdi mdi-microsoft-excel me-1"></i>
-                            Export</button>
+                        <a href="{{ route('admin.trans.export') }}" type="submit" class="btn btn-success mb-4 col-sm-2 "><i class="mdi mdi-microsoft-excel me-1"></i>
+                            Export</a>
                     </div>
                     <div class="text-end">
                         <a href="{{ route('admin.trans.create') }}" class="btn btn-success mb-4"><i

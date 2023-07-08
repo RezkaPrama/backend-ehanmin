@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\TransUsulanExport;
 use App\Filters\NikFilter;
 use App\Filters\SatuanFilter;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,7 @@ use App\Models\TransUsulan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InputUsulanController extends Controller
 {
@@ -255,5 +257,16 @@ class InputUsulanController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+     public function export() 
+    {
+        return Excel::download(new TransUsulanExport, 'users.xlsx');
     }
 }

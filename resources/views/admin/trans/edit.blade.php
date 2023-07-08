@@ -93,11 +93,14 @@
 
                             <div class="mb-3">
                                 <label class="form-label" for="periode"> Periode</label>
-                                <select class="form-control @error('periode') is-invalid @enderror" data-trigger name="periode" id="periode">
+                                <select class="form-control @error('periode') is-invalid @enderror" data-trigger
+                                    name="periode" id="periode">
                                     <option value="">Pilih Periode</option>
-                                    <option value="1 April (1-4)" {{ $trans->periode == '1 April (1-4)' ? 'selected' : '' }}>1 April (1-4)</option>
-                                    <option value="1 Oktober (1-10)" {{ $trans->periode == '1 Oktober (1-10)' ? 'selected' : '' }}>1 Oktober (1-10)</option>
-                                    
+                                    <option value="1 April (1-4)" {{ $trans->periode == '1 April (1-4)' ? 'selected' :
+                                        '' }}>1 April (1-4)</option>
+                                    <option value="1 Oktober (1-10)" {{ $trans->periode == '1 Oktober (1-10)' ?
+                                        'selected' : '' }}>1 Oktober (1-10)</option>
+
                                 </select>
 
                                 @error('periode')
@@ -236,6 +239,7 @@
             </form>
         </div>
 
+        {{$fileUsulanDetail}}
         <div class="card">
             <div class="card-body">
                 <div class="py-2">
@@ -261,6 +265,7 @@
                                             <p class="text-muted mb-0">{{ $row->nama_dokumen }}</p>
                                         </div>
                                     </td>
+
                                     @if (empty($row->fileUsulanDetail->nama_file ))
                                     <td> - </td>
                                     <td>
@@ -270,6 +275,8 @@
                                                 class="bx bx-upload me-2"></i>Upload</a>
                                     </td>
                                     @else
+
+                                    @if ($row->fileUsulanDetail->trans_usulans_id == $trans->id)
                                     <td>
                                         <div>
                                             <p class="text-muted mb-0">{{ $row->fileUsulanDetail->nama_file }}</p>
@@ -289,6 +296,16 @@
                                         {{-- <a href="" data-id="{{ $row->id }}" id="destroy"
                                             class="btn btn-danger w-sm"><i class="bx bx-upload me-2"></i>Delete</a> --}}
                                     </td>
+                                    @else
+                                        <td> - </td>
+                                        <td>
+                                            <a href="" data-bs-toggle="modal" data-bs-target="#uploadFile"
+                                                data-param1="{{ $row->id }}" data-param2="{{ $trans->id }}"
+                                                data-param3="{{auth()->user()->id}}" class="btn btn-success w-sm"><i
+                                                    class="bx bx-upload me-2"></i>Upload</a>
+                                        </td>
+                                    @endif
+
                                     @endif
 
                                 </tr>
