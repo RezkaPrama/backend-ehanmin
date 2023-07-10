@@ -43,6 +43,10 @@
                         </div>
                     </div>
 
+                    {{-- <label class="col-sm-2 col-form-label">user id</label> --}}
+                    <input id="userid" name="userid" type="hidden" value="{{auth()->user()->id}}"
+                    class="form-control ">
+
                     <div class="mb-3 row">
                         <label class="col-sm-2 col-form-label">Jenis KP</label>
                         <div class="col-sm-4">
@@ -57,15 +61,17 @@
                     <div class="mb-3 row">
                         <label for="example-week-input" class="col-md-2 col-form-label">Tanggal Usulan</label>
                         <div class="col-sm-2">
-                            <input id="tanggal_usulan_dari" name="tanggal_usulan_dari" placeholder="Filter Tanggal Usulan" type="text" class="form-control flatpickr-input">
+                            <input id="tanggal_usulan_dari" name="tanggal_usulan_dari"
+                                placeholder="Filter Tanggal Usulan" type="text" class="form-control flatpickr-input">
                         </div>
                         <div class="col-sm-2">
-                            <input id="tanggal_usulan_sampai" name="tanggal_usulan_sampai" placeholder="Filter Tanggal Usulan" type="text" class="form-control flatpickr-input">
+                            <input id="tanggal_usulan_sampai" name="tanggal_usulan_sampai"
+                                placeholder="Filter Tanggal Usulan" type="text" class="form-control flatpickr-input">
                         </div>
-                        <button type="submit" class="btn btn-success mb-4 col-sm-2 me-1"><i class="mdi mdi-filter me-1"></i>
+                        <button type="submit" class="btn btn-success mb-4 col-sm-2 me-1"><i
+                                class="mdi mdi-filter me-1"></i>
                             Filter</button>
-                        <a href="{{ route('admin.trans.export') }}" type="submit" class="btn btn-success mb-4 col-sm-2 "><i class="mdi mdi-microsoft-excel me-1"></i>
-                            Export</a>
+                        <a id="export-excel" class="btn btn-success mb-4 col-sm-2 "><i class="mdi mdi-microsoft-excel me-1"></i> Export</a>
                     </div>
                     <div class="text-end">
                         <a href="{{ route('admin.trans.create') }}" class="btn btn-success mb-4"><i
@@ -382,6 +388,38 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
+
+        document.getElementById('export-excel').addEventListener('click', function() {
+            
+            var urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('nik') || urlParams.has('satuans_id') || urlParams.has('jenis_kenaikan_id') || urlParams.has('tanggal_usulan_dari') || urlParams.has('tanggal_usulan_sampai') ) {
+                
+                const param = document.getElementById('userid').value;
+                var nik = urlParams.get('nik');
+                var satuans_id = urlParams.get('satuans_id');
+                var jenis_kenaikan_id = urlParams.get('jenis_kenaikan_id');
+                var tanggal_usulan_dari = urlParams.get('tanggal_usulan_dari');
+                var tanggal_usulan_sampai = urlParams.get('tanggal_usulan_sampai');
+
+                var data = {
+                    userid: param,
+                    nik: nik,
+                    satuans_id: satuans_id,
+                    jenis_kenaikan_id: jenis_kenaikan_id,
+                    tanggal_usulan_dari: tanggal_usulan_dari,
+                    tanggal_usulan_sampai: tanggal_usulan_sampai,
+                };
+
+                window.location.href = `{{ route("admin.trans.exportExcel", "") }}/${param}`;
+
+            } else {
+                
+                const param = document.getElementById('userid').value;
+                window.location.href = `{{ route("admin.trans.exportExcel", "") }}/${param}`;
+                
+            }
+    });
 
         // Swal.fire("Hello, SweetAlert!");
 

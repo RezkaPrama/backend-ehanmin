@@ -265,8 +265,34 @@ class InputUsulanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-     public function export() 
+    public function exportExcel(Request $request, $userid)
     {
-        return Excel::download(new TransUsulanExport, 'users.xlsx');
+        $nik = $request->input('nik');
+        $satuans_id = $request->input('satuans_id');
+        $jenis_kenaikan_id = $request->input('jenis_kenaikan_id');
+        $tanggal_usulan_dari = $request->input('tanggal_usulan_dari');
+        $tanggal_usulan_sampai = $request->input('tanggal_usulan_sampai');
+
+        $query = TransUsulan::query();
+
+        if ($nik != null) {
+            $query->where('nik', $nik);
+        }
+
+        if ($satuans_id != null) {
+            $query->where('satuans_id', $satuans_id);
+        }
+
+        if ($jenis_kenaikan_id != null) {
+            $query->where('jenis_kenaikan_id', $jenis_kenaikan_id);
+        }
+
+        if ($tanggal_usulan_dari && $tanggal_usulan_sampai) {
+            $query->orWhereBetween('tanggal_surat', [$tanggal_usulan_dari, $tanggal_usulan_sampai]);
+        }
+
+        $results = $query->get();
+
+        return Excel::download(new TransUsulanExport($results), 'surat_keluar.xlsx');
     }
 }

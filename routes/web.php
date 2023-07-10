@@ -49,7 +49,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/trans/updateStatus/{id}', [InputUsulanController::class, 'updateStatus'])->name('admin.trans.updateStatus');
         Route::get('/trans/approve/{id}', [InputUsulanController::class, 'approve'])->name('admin.trans.approve');
         Route::get('/trans/decline/{id}', [InputUsulanController::class, 'decline'])->name('admin.trans.decline');
-        Route::get('/trans/export', [InputUsulanController::class, 'export'])->name('admin.trans.export');
+        Route::get('/trans/exportExcel/{userid}', [InputUsulanController::class, 'exportExcel'])->name('admin.trans.exportExcel');
 
         //route File usulan detail 
         Route::post('/fileUsulanDetail/upload', [FileUsulanDetailController::class, 'upload'])->name('admin.fileUsulanDetail.upload');
