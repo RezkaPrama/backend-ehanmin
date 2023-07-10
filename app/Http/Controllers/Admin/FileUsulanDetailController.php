@@ -80,10 +80,10 @@ class FileUsulanDetailController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, $userid)
+    public function destroy($id, $userid, $name)
     {
         $directory = 'public/documents/';
-        $filePath = $directory . '/' . $userid . '/';
+        $filePath = $directory . $userid . '/' . $name . '/';
 
         $fileUsulanDetail = FileUsulanDetail::findOrFail($id);
         // $image = Storage::disk('local')->delete('public/documents/'.basename($fileUsulanDetail->nama_file));
@@ -107,10 +107,11 @@ class FileUsulanDetailController extends Controller
     {
         if ($request->file('nama_file') !== null) {
 
-            $user_id = $request->input('user_name');
+            $user_id = $request->input('user_id');
+            $nama_detail = $request->input('nama_detail');
 
             $directory = 'public/documents/';
-            $filePath = $directory . '/' . $user_id . '/';
+            $filePath = $directory . '/' . $user_id . '/' . $nama_detail . '/';
 
             // upload image
             $nama_file = $request->file('nama_file');
@@ -118,8 +119,9 @@ class FileUsulanDetailController extends Controller
             $nama_file->storeAs($filePath, $nama_file->getClientOriginalName());
 
             $fileUsulanDetail = FileUsulanDetail::create([
-                'file_usulan_id'      => $request->input('file_usulans_id'),
+                'file_usulan_id'       => $request->input('file_usulans_id'),
                 'trans_usulans_id'     => $request->input('trans_usulans_id'),
+                'nama'                 => $nama_detail,
                 'nama_file'            => $nama_file->getClientOriginalName()
             ]);
 
@@ -138,12 +140,12 @@ class FileUsulanDetailController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function downloadFile($userid, $filename)
+    public function downloadFile($userid, $filename, $name)
     {
         // $filePath = 'public/documents/' . $filename; // Replace with the actual directory path
 
         $directory = 'public/documents/';
-        $subPath = $directory . '/' . $userid . '/';
+        $subPath = $directory . '/' . $userid . '/' . $name . '/';
 
         $filePath = $subPath . $filename; // Replace with the actual directory path
 
@@ -161,12 +163,12 @@ class FileUsulanDetailController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function previewPDF($filename, $userid)
+    public function previewPDF($filename, $userid, $name)
     {
         // $filePath = 'storage/documents/' . $filename; // Replace with the actual directory path
 
-        $directory = 'storage/documents/';
-        $subPath = $directory . '/' . $userid . '/';
+        $directory = 'storage/documents';
+        $subPath = $directory . '/' . $userid . '/' . $name . '/';
 
         $filePath = $subPath . $filename; // Replace with the actual directory path
 

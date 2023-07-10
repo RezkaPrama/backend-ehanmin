@@ -53,9 +53,9 @@ Route::prefix('admin')->group(function () {
 
         //route File usulan detail 
         Route::post('/fileUsulanDetail/upload', [FileUsulanDetailController::class, 'upload'])->name('admin.fileUsulanDetail.upload');
-        Route::get('/fileUsulanDetail/{userid}/{filename}/download', [FileUsulanDetailController::class, 'downloadFile'])->name('admin.fileUsulanDetail.download');
-        Route::get('/fileUsulanDetail/preview/{filename}/{userid}', [FileUsulanDetailController::class, 'previewPDF'])->name('admin.fileUsulanDetail.previewPDF');
-        Route::get('/fileUsulanDetail/destroy/{id}/{userid}', [FileUsulanDetailController::class, 'destroy'])->name('admin.fileUsulanDetail.destroy');
+        Route::get('/fileUsulanDetail/{userid}/{filename}/{name}/download', [FileUsulanDetailController::class, 'downloadFile'])->name('admin.fileUsulanDetail.download');
+        Route::get('/fileUsulanDetail/preview/{filename}/{userid}/{name}', [FileUsulanDetailController::class, 'previewPDF'])->name('admin.fileUsulanDetail.previewPDF');
+        Route::get('/fileUsulanDetail/destroy/{id}/{userid}/{name}', [FileUsulanDetailController::class, 'destroy'])->name('admin.fileUsulanDetail.destroy');
 
         // route manajemen file
         Route::resource('/manageFile', FileUsulanController::class, ['as' => 'admin']);

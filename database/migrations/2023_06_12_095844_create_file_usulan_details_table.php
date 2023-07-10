@@ -17,6 +17,7 @@ class CreateFileUsulanDetailsTable extends Migration
             $table->id();
             $table->bigInteger('file_usulan_id')->unsigned();
             $table->bigInteger('trans_usulans_id')->unsigned();
+            $table->string('nama');
             $table->string('nama_file');
             $table->timestamps();
         });

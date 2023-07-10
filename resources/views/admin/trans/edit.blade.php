@@ -238,8 +238,7 @@
             </div>
             </form>
         </div>
-
-        {{$fileUsulanDetail}}
+        
         <div class="card">
             <div class="card-body">
                 <div class="py-2">
@@ -271,7 +270,7 @@
                                     <td>
                                         <a href="" data-bs-toggle="modal" data-bs-target="#uploadFile"
                                             data-param1="{{ $row->id }}" data-param2="{{ $trans->id }}"
-                                            data-param3="{{auth()->user()->id}}" class="btn btn-success w-sm"><i
+                                            data-param3="{{auth()->user()->id}}" data-param4="{{ $trans->nama }}" class="btn btn-success w-sm"><i
                                                 class="bx bx-upload me-2"></i>Upload</a>
                                     </td>
                                     @else
@@ -283,18 +282,12 @@
                                         </div>
                                     </td>
                                     <td>
-                                        {{-- <a
-                                            href="{{ route('admin.fileUsulanDetail.download', $row->fileUsulanDetail->nama_file) }}"
+                                        <a href="{{ route('admin.fileUsulanDetail.download', ['userid' => auth()->user()->id, 'filename' => $row->fileUsulanDetail->nama_file, 'name' => $trans->nama ]) }}"
                                             class="btn btn-primary w-sm"><i class="bx bx-download me-2"></i>Download</a>
-                                        --}}
-                                        <a href="{{ route('admin.fileUsulanDetail.download', ['userid' => auth()->user()->id, 'filename' => $row->fileUsulanDetail->nama_file ]) }}"
-                                            class="btn btn-primary w-sm"><i class="bx bx-download me-2"></i>Download</a>
-                                        <a href="{{ route('admin.fileUsulanDetail.previewPDF', ['filename' => $row->fileUsulanDetail->nama_file, 'userid' => auth()->user()->id ]) }}"
+                                        <a href="{{ route('admin.fileUsulanDetail.previewPDF', ['filename' => $row->fileUsulanDetail->nama_file, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
                                             class="btn btn-dark w-sm"><i class="bx bxs-file-pdf me-2"></i>Preview</a>
-                                        <a href="{{ route('admin.fileUsulanDetail.destroy', ['id' => $row->fileUsulanDetail->id, 'userid' => auth()->user()->id ]) }}"
+                                        <a href="{{ route('admin.fileUsulanDetail.destroy', ['id' => $row->fileUsulanDetail->id, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
                                             class="btn btn-danger w-sm"><i class="bx bxs-eraser-pdf me-2"></i>Hapus</a>
-                                        {{-- <a href="" data-id="{{ $row->id }}" id="destroy"
-                                            class="btn btn-danger w-sm"><i class="bx bx-upload me-2"></i>Delete</a> --}}
                                     </td>
                                     @else
                                         <td> - </td>
@@ -311,7 +304,8 @@
                                 </tr>
                                 @empty
                                 <div class="alert alert-danger">
-                                    File Dokumen Belum Tersedia!
+                                    Manajemen File UKP untuk jenis kp : <strong>{{$trans->jenisKenaikan->jenis_kenaikan }}</strong> ke pangkat <strong>{{$trans->ke_pangkat}}</strong> Belum Tersedia! <br>
+                                    (Silahkan Tambahkan di Menu Manajemen File UKP)
                                 </div>
                                 @endforelse
                                 <!-- end tr -->
@@ -370,7 +364,8 @@
 
                             <input id="file_usulans_id" name="file_usulans_id" type="hidden" class="form-control">
                             <input id="trans_usulans_id" name="trans_usulans_id" type="hidden" class="form-control">
-                            <input id="user_name" name="user_name" type="hidden" class="form-control">
+                            <input id="user_id" name="user_id" type="hidden" class="form-control">
+                            <input id="nama_detail" name="nama_detail" type="hidden" class="form-control">
 
                             <label class="form-label" for="productdesc">Dokumen</label>
 
@@ -470,6 +465,7 @@
             var param1 = button.data('param1'); // Retrieve data-param1 attribute
             var param2 = button.data('param2'); // Retrieve data-param2 attribute
             var param3 = button.data('param3'); // Retrieve data-param2 attribute
+            var param4 = button.data('param4'); // Retrieve data-param2 attribute
 
             // Populate the modal with the retrieved ID
             var input = document.getElementById('file_usulans_id');
@@ -478,8 +474,11 @@
             var input = document.getElementById('trans_usulans_id');
             input.value = param2;
 
-            var input = document.getElementById('user_name');
+            var input = document.getElementById('user_id');
             input.value = param3;
+
+            var input = document.getElementById('nama_detail');
+            input.value = param4;
         });
 
         $("#datepicker").datepicker({
