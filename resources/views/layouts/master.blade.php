@@ -9,6 +9,7 @@
     <meta content="Themesbrand" name="author" />
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}">
     <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('layouts.head-css')
 </head>
 

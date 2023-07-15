@@ -49,4 +49,15 @@ class TransUsulan extends Model
     {
         return $this->hasMany(FileUsulan::class);
     }
+
+    /**
+     * jenis kenaikan
+     *
+     * @return void
+     */
+
+     public function fileUsulanDetail()
+     {
+         return $this->hasOne(FileUsulanDetail::class);
+     }
 }

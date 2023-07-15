@@ -256,59 +256,59 @@
                             </thead><!-- end thead -->
                             <tbody>
 
-                                @forelse ($fileUsulan as $item => $row)
-                                <tr>
-                                    <th scope="row">{{ $item + 1 }}</th>
-                                    <td>
-                                        <div>
-                                            <p class="text-muted mb-0">{{ $row->nama_dokumen }}</p>
-                                        </div>
-                                    </td>
-
-                                    @if (empty($row->fileUsulanDetail->nama_file ))
-                                    <td> - </td>
-                                    <td>
-                                        <a href="" data-bs-toggle="modal" data-bs-target="#uploadFile"
-                                            data-param1="{{ $row->id }}" data-param2="{{ $trans->id }}"
-                                            data-param3="{{auth()->user()->id}}" data-param4="{{ $trans->nama }}" class="btn btn-success w-sm"><i
-                                                class="bx bx-upload me-2"></i>Upload</a>
-                                    </td>
-                                    @else
-
-                                    @if ($row->fileUsulanDetail->trans_usulans_id == $trans->id)
-                                    <td>
-                                        <div>
-                                            <p class="text-muted mb-0">{{ $row->fileUsulanDetail->nama_file }}</p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('admin.fileUsulanDetail.download', ['userid' => auth()->user()->id, 'filename' => $row->fileUsulanDetail->nama_file, 'name' => $trans->nama ]) }}"
-                                            class="btn btn-primary w-sm"><i class="bx bx-download me-2"></i>Download</a>
-                                        <a href="{{ route('admin.fileUsulanDetail.previewPDF', ['filename' => $row->fileUsulanDetail->nama_file, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
-                                            class="btn btn-dark w-sm"><i class="bx bxs-file-pdf me-2"></i>Preview</a>
-                                        <a href="{{ route('admin.fileUsulanDetail.destroy', ['id' => $row->fileUsulanDetail->id, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
-                                            class="btn btn-danger w-sm"><i class="bx bxs-eraser-pdf me-2"></i>Hapus</a>
-                                    </td>
-                                    @else
-                                        <td> - </td>
-                                        <td>
-                                            <a href="" data-bs-toggle="modal" data-bs-target="#uploadFile"
-                                                data-param1="{{ $row->id }}" data-param2="{{ $trans->id }}"
-                                                data-param3="{{auth()->user()->id}}" class="btn btn-success w-sm"><i
-                                                    class="bx bx-upload me-2"></i>Upload</a>
-                                        </td>
-                                    @endif
-
-                                    @endif
-
-                                </tr>
-                                @empty
+                                @if ($fileUsulan->isEmpty())
                                 <div class="alert alert-danger">
-                                    Manajemen File UKP untuk jenis kp : <strong>{{$trans->jenisKenaikan->jenis_kenaikan }}</strong> ke pangkat <strong>{{$trans->ke_pangkat}}</strong> Belum Tersedia! <br>
+                                    Manajemen File UKP untuk jenis kp : <strong>{{$trans->jenisKenaikan->jenis_kenaikan
+                                        }}</strong> ke pangkat <strong>{{$trans->ke_pangkat}}</strong> Belum Tersedia!
+                                    <br>
                                     (Silahkan Tambahkan di Menu Manajemen File UKP)
                                 </div>
-                                @endforelse
-                                <!-- end tr -->
+                                @else
+                                    <!-- start tr -->
+                                        @forelse ($diffFileUsulan as $key => $row)
+                                        <tr>
+                                            <th scope="row">{{ $key + 1 }}</th>
+                                            <td class="text-center">
+                                                <div>
+                                                    <p class="text-muted mb-0">{{ $row->nama_dokumen }}</p>
+                                                </div>
+                                            </td>
+
+                                            @if ($row->nama_file === 'Unknown')
+                                                <td class="text-center">
+                                                    <span class="badge bg-warning font-size-12"></i>belum upload file</span>
+                                                </td>
+                                            @else
+                                                <td class="text-center">
+                                                    <div>
+                                                        <p class="text-muted mb-0">{{ $row->nama_file }}</p>
+                                                    </div>
+                                                </td>
+                                            @endif
+
+                                            @if ($row->nama_file === 'Unknown')
+                                                <td class="text-center">
+                                                    <a href="" data-bs-toggle="modal" data-bs-target="#uploadFile"
+                                                        data-param1="{{ $row->id }}" data-param2="{{ $trans->id }}"
+                                                        data-param3="{{auth()->user()->id}}" data-param4="{{$trans->nama}}"
+                                                        class="btn btn-success w-sm"><i class="bx bx-upload me-2"></i>Upload</a>
+                                                </td>
+                                            @else
+                                                <td class="text-center">
+                                                    <a href="{{ route('admin.fileUsulanDetail.download', ['userid' => auth()->user()->id, 'filename' => $row->nama_file, 'name' => $trans->nama ]) }}"
+                                                        class="btn btn-primary w-sm"><i class="bx bx-download me-2"></i>Download</a>
+                                                    <a href="{{ route('admin.fileUsulanDetail.previewPDF', ['filename' => $row->nama_file, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
+                                                        class="btn btn-dark w-sm"><i class="bx bxs-file-pdf me-2"></i>Preview</a>
+                                                    <a href="{{ route('admin.fileUsulanDetail.destroy', ['nama_file' => $row->nama_file, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
+                                                        class="btn btn-danger w-sm"><i class="bx bxs-eraser-pdf me-2"></i>Hapus</a>
+                                                </td>
+                                            @endif
+                                        </tr>
+                                        @empty
+
+                                        @endforelse
+                                    <!-- end tr -->
+                                @endif
 
                             </tbody><!-- end tbody -->
                         </table><!-- end table -->

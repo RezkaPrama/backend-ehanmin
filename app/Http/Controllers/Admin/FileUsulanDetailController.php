@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\FileUsulanDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class FileUsulanDetailController extends Controller
@@ -80,15 +81,17 @@ class FileUsulanDetailController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id, $userid, $name)
+    public function destroy($nama_file, $userid, $name)
     {
         $directory = 'public/documents/';
         $filePath = $directory . $userid . '/' . $name . '/';
 
-        $fileUsulanDetail = FileUsulanDetail::findOrFail($id);
-        // $image = Storage::disk('local')->delete('public/documents/'.basename($fileUsulanDetail->nama_file));
-        $image = Storage::disk('local')->delete($filePath.basename($fileUsulanDetail->nama_file));
-        $fileUsulanDetail->delete();
+        $fileUsulanDetail = DB::table('file_usulan_details')
+            ->select('*')
+            ->where('nama_file', '=', $nama_file)
+            ->delete();
+
+        $image = Storage::disk('local')->delete($filePath.basename($nama_file));
 
         if($fileUsulanDetail){
             return redirect()->back()->with(['success' => 'Data Berhasil Dihapus!']);
@@ -131,6 +134,46 @@ class FileUsulanDetailController extends Controller
             return redirect()->back()->with(['success' => 'File Berhasil Diupload!']);
         } else {
             return redirect()->back()->with(['error' => 'File Gagal Diupload!']);
+        }
+    }
+
+    /**
+     * Upload the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadCreate(Request $request)
+    {
+        if ($request->file('file') !== null) {
+
+            $file_usulans_id = $request->input('file_usulans_id');
+            $trans_usulans_id = $request->input('trans_usulans_id');
+            $user_id = $request->input('user_id');
+            $nama_detail = $request->input('nama_detail');
+
+            $directory = 'public/documents/';
+            $filePath = $directory . '/' . $user_id . '/' . $nama_detail . '/';
+
+            // upload image
+            $nama_file = $request->file('file');
+            $filename = $nama_file->getClientOriginalName();
+            // $nama_file->storeAs('public/documents/', $nama_file->getClientOriginalName());
+            $nama_file->storeAs($filePath, $filename);
+
+            $fileUsulanDetail = FileUsulanDetail::create([
+                'file_usulan_id'       => $file_usulans_id,
+                'trans_usulans_id'     => $trans_usulans_id,
+                'nama'                 => $nama_detail,
+                'nama_file'            => $filename
+            ]);
+
+            //assign users
+            $fileUsulanDetail->save();
+
+            return response()->json(['success' => 'File Berhasil Diupload!']);
+        } else {
+            return response()->json(['error' => 'File Gagal Diupload!']);
         }
     }
 

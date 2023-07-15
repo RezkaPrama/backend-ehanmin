@@ -26,4 +26,15 @@ class FileUsulanDetail extends Model
      {
          return $this->belongsTo(FileUsulan::class);
      }
+
+     /**
+     * jenis kenaikan
+     *
+     * @return void
+     */
+
+     public function transUsulan()
+     {
+         return $this->belongsTo(TransUsulan::class);
+     }
 }

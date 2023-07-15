@@ -28,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-        DB::table('users')->insert(array('name'=>'admin', 'satuans_id' => 1, 'nik' => 3204082311900001, 'email'=>'rezkaprama@gmail.com', 'avatar' => '', 'role' => 'Admin', 'password'=>Hash::make('123456')));
+        DB::table('users')->insert(array('name'=>'admin', 'satuans_id' => 1, 'nik' => 3204082311900001, 'email'=>'admin@gmail.com', 'avatar' => '', 'role' => 'Admin', 'password'=>Hash::make('password')));
     }
 
     /**

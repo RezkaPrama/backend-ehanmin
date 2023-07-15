@@ -45,6 +45,7 @@ Route::prefix('admin')->group(function () {
 
         //route input usulan 
         Route::resource('/trans', InputUsulanController::class, ['as' => 'admin']);
+        Route::post('/trans/fetchDetail', [InputUsulanController::class, 'fetchDetail'])->name('admin.trans.fetchDetail');
         Route::get('/trans/filter', [InputUsulanController::class, 'filter'])->name('admin.trans.filter');
         Route::get('/trans/updateStatus/{id}', [InputUsulanController::class, 'updateStatus'])->name('admin.trans.updateStatus');
         Route::get('/trans/approve/{id}', [InputUsulanController::class, 'approve'])->name('admin.trans.approve');
@@ -53,9 +54,10 @@ Route::prefix('admin')->group(function () {
 
         //route File usulan detail 
         Route::post('/fileUsulanDetail/upload', [FileUsulanDetailController::class, 'upload'])->name('admin.fileUsulanDetail.upload');
+        Route::post('/fileUsulanDetail/uploadCreate', [FileUsulanDetailController::class, 'uploadCreate'])->name('admin.fileUsulanDetail.uploadCreate');
         Route::get('/fileUsulanDetail/{userid}/{filename}/{name}/download', [FileUsulanDetailController::class, 'downloadFile'])->name('admin.fileUsulanDetail.download');
         Route::get('/fileUsulanDetail/preview/{filename}/{userid}/{name}', [FileUsulanDetailController::class, 'previewPDF'])->name('admin.fileUsulanDetail.previewPDF');
-        Route::get('/fileUsulanDetail/destroy/{id}/{userid}/{name}', [FileUsulanDetailController::class, 'destroy'])->name('admin.fileUsulanDetail.destroy');
+        Route::get('/fileUsulanDetail/destroy/{nama_file}/{userid}/{name}', [FileUsulanDetailController::class, 'destroy'])->name('admin.fileUsulanDetail.destroy');
 
         // route manajemen file
         Route::resource('/manageFile', FileUsulanController::class, ['as' => 'admin']);

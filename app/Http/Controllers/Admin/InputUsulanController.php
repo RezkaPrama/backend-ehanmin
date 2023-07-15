@@ -60,7 +60,20 @@ class InputUsulanController extends Controller
         $satuans = Satuan::all();
         $jenis_kenaikan = JenisKenaikan::all();
 
-        return view('admin.trans.create', compact('satuans', 'jenis_kenaikan'));
+        $lastTransUsulan = TransUsulan::latest()->first();
+
+        if ($lastTransUsulan) {
+            $lastTransUsulanId = $lastTransUsulan->id;
+        } else {
+            $lastTransUsulanId = 0;
+        }
+
+        $newTransUsulanId = $lastTransUsulanId + 1;
+
+        // $fileUsulan = FileUsulan::where('jenis_kenaikan_id', $trans->jenis_kenaikan_id)
+        //     ->where('ke_pangkat', $trans->ke_pangkat)->get();
+
+        return view('admin.trans.create', compact('satuans', 'jenis_kenaikan', 'newTransUsulanId'));
     }
 
     /**
@@ -86,6 +99,7 @@ class InputUsulanController extends Controller
         // Example: Create a new user and store it in the database
         $trans = TransUsulan::create([
 
+            'id'                => $request->input('newTransUsulanId'),
             'nik'               => $request->input('nik'),
             'nama'              => $request->input('nama'),
             'tanggal_usulan'    => $request->input('tanggal_usulan'),
@@ -120,6 +134,35 @@ class InputUsulanController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function fetchDetail(Request $request)
+    {
+        $jenis_kenaikan_id = $request->input('jenis_kenaikan_id');
+        $ke_pangkat = $request->input('ke_pangkat');
+
+        $jenis_kenaikan = JenisKenaikan::findOrFail($jenis_kenaikan_id);
+
+        $data = FileUsulan::where('jenis_kenaikan_id', $jenis_kenaikan_id)
+            ->where('ke_pangkat', $ke_pangkat)->get();
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                'result' => 'Error',
+                'message' => ' Manajemen File UKP untuk jenis kp : <strong>' . $jenis_kenaikan->jenis_kenaikan . '</strong> ke pangkat <strong>' . $ke_pangkat . '</strong> Belum Tersedia!<br>(Silahkan Tambahkan di Menu Manajemen File UKP)'
+            ]);
+        } else {
+            return response()->json([
+                'result' => 'Success',
+                'data' => $data
+            ]);
+        }
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -140,7 +183,19 @@ class InputUsulanController extends Controller
             ->where('trans_usulans_id', '=', $trans->id)
             ->latest()->get();
 
-        return view('admin.trans.edit', compact('trans', 'satuans', 'jenis_kenaikan', 'fileUsulan', 'fileUsulanDetail'));
+        $fileUsulanDetail = DB::table('file_usulan_details')
+            ->join('file_usulans', 'file_usulan_details.file_usulan_id', '=', 'file_usulans.id')
+            ->select('*')
+            ->where('file_usulan_details.trans_usulans_id', '=', $trans->id)
+            ->get();
+
+        $diffFileUsulan = $fileUsulan->map(function ($item) use ($fileUsulanDetail) {
+            $match = $fileUsulanDetail->firstWhere('file_usulan_id', $item->id);
+            $item->nama_file = $match ? $match->nama_file : 'Unknown';
+            return $item;
+        });
+
+        return view('admin.trans.edit', compact('trans', 'satuans', 'jenis_kenaikan', 'fileUsulan', 'fileUsulanDetail', 'diffFileUsulan'));
     }
 
     /**
