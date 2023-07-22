@@ -62,15 +62,20 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="nik">NIK/NRP</label>
+                                <label class="form-label" for="nik">NRP/NIP</label>
                                 <input id="nik" name="nik" placeholder="Masukan NIK" type="text"
                                     class="form-control @error('nik') is-invalid @enderror">
 
                                 @error('nik')
                                 <div class="invalid-feedback" style="display: block">
-                                    NIK/NRP harus terisi
+                                    NRP/NIP harus terisi
                                 </div>
                                 @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <input id="created_by" name="created_by" placeholder="Masukan created_by" type="hidden"
+                                    value="{{auth()->user()->id}}" class="form-control">
                             </div>
 
                             <div class="mb-3">
@@ -142,14 +147,34 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="choices-single-default" class="form-label">Satuan</label>
-                                        <select class="form-control @error('satuans_id') is-invalid @enderror"
-                                            data-trigger id="satuans_id" name="satuans_id">
+                                        <label for="choices-single-default" class="form-label">Instansi</label>
+
+                                        @if (auth()->user()->role == 'User')
+                                        <select class="form-control @error('satuans_id_add') is-invalid @enderror"
+                                            disabled data-trigger id="satuans_id_add" name="satuans_id_add">
                                             <option value="">Pilih Satuan</option>
-                                            @foreach ($satuans as $satuan)
-                                            <option value="{{ $satuan->id }}">{{ $satuan->nama_satuan }}</option>
+                                            @foreach ($satuans as $item)
+                                            @if(auth()->user()->satuans_id == $item->id)
+                                            <option value="{{ $item->id  }}" selected>{{ $item->nama_instansi }}
+                                            </option>
+                                            @else
+                                            <option value="{{ $item->id  }}">{{ $item->nama_instansi }}</option>
+                                            @endif
                                             @endforeach
                                         </select>
+                                        <input id="satuans_id" name="satuans_id" type="hidden"
+                                            value="{{ auth()->user()->satuans_id }}"
+                                            class="form-control @error('satuans_id') is-invalid @enderror">
+                                        @else
+                                        <select class="form-control @error('satuans_id') is-invalid @enderror"
+                                            data-trigger id="satuans_id" name="satuans_id">
+                                            <option value="">Pilih Instansi</option>
+                                            @foreach ($satuans as $satuan)
+                                            <option value="{{ $satuan->id }}">{{ $satuan->nama_instansi }}</option>
+                                            @endforeach
+                                        </select>
+                                        @endif
+
 
                                         @error('satuans_id')
                                         <div class="invalid-feedback" style="display: block">
@@ -225,10 +250,10 @@
                         <table class="table align-middle table-nowrap table-centered mb-0" id="detail-doc">
                             <thead>
                                 <tr>
-                                    <th class="fw-bold" style="width: 70px;">No.</th>
-                                    <th class="fw-bold">Nama Dokumen</th>
-                                    <th class="fw-bold">Nama File</th>
-                                    <th class="fw-bold">Action</th>
+                                    <th class="fw-bold text-center" style="width: 70px;">No.</th>
+                                    <th class="fw-bold text-center" style="width: 40%;">Nama Dokumen</th>
+                                    <th class="fw-bold text-center" style="width: 40%;">Nama File</th>
+                                    <th class="fw-bold text-center">Action</th>
                                 </tr>
                             </thead><!-- end thead -->
                             <div id="message-alert"></div>
@@ -243,7 +268,7 @@
 
         <!-- modal-template start// -->
         <div id="card-upload"></div>
-        
+
     </div>
 </div>
 
@@ -385,14 +410,14 @@
 
                                 var template = `
                                 <tr>
-                                        <th scope="row">${noUrut}</th>
-                                        <td>
+                                        <th class="text-center" scope="row" style="width: 70px;">${noUrut}</th>
+                                        <td class="text-center" style="width: 40%;">
                                             <div>
                                                 <p class="text-muted mb-0">${nama_dokumen}</p>
                                             </div>
                                         </td>
-                                        <td id="nama_doc_${fileUsulanId}">-</td>
-                                        <td id="action_btn_${fileUsulanId}" >
+                                        <td class="text-center" id="nama_doc_${fileUsulanId}" style="width: 40%;">-</td>
+                                        <td class="text-center" id="action_btn_${fileUsulanId}" >
                                             <a href="" id="btnUploadDetail_${fileUsulanId}"  data-bs-toggle="modal" data-bs-target="#uploadFile_${fileUsulanId}" 
                                             data-param1="${fileUsulanId}" data-param2="${valueId}" data-param3="{{auth()->user()->id}}" data-param4="${valueNama}" 
                                             class="btn btn-success w-sm"><i class="bx bx-upload me-2"></i>Upload</a>
@@ -436,70 +461,86 @@
                                 card += modUpload;
 
                                 // memanggil dropzone berdasar no urut
+                                var alert = '';
                                 var script = document.createElement('script');
                                 script.src = 'https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js';
                                 document.head.appendChild(script);
 
-                                script.onload = function() {
-                                    Dropzone.autoDiscover = false;
-                                    
-                                    var dropzoneId = "create-dropzone-" + fileUsulanId;
-                                    var myDropzone = new Dropzone("#" + dropzoneId, {
-                                    url: "{{ route('admin.fileUsulanDetail.uploadCreate') }}",
-                                    headers: {
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                    },
-                                    paramName: "file",
-                                    maxFiles: 50,
-                                    autoProcessQueue: true, // prevent automatic uploading
-                                    maxFilesize: 2, // Maximum file size in MB
-                                    addRemoveLinks: false,
-                                    acceptedFiles: ".pdf",
-                                    // dictRemoveFile: 'Hapus',
-                                    init: function() {
-                                    this.on("sending", function(file, xhr, formData) {
-                                                                            
-                                        // var file_usulans_id = document.getElementById('file_usulans_id_new').value;
-                                        console.log("fileUsulanId : " + fileUsulanId);
-                                        formData.append('file_usulans_id', fileUsulanId);
-                                                                            
-                                        var trans_usulans_id = document.getElementById('trans_usulans_id').value;
-                                        console.log("trans_usulans_id : " + trans_usulans_id);
-                                        formData.append('trans_usulans_id', trans_usulans_id);
-                                                                            
-                                        var userId = document.getElementById('user_id').value;
-                                        console.log("userId : " + userId);
-                                        formData.append('user_id', userId);
-                                                                            
-                                        var nama_detail = document.getElementById('nama_detail').value;
-                                        console.log("nama_detail : " + nama_detail);
-                                        formData.append('nama_detail', nama_detail);
-                                    });
-                                        this.on("success", function(file, response) {
-                                        // console.log(response);
-                                    });
-                                        this.on("addedfile", function(file, response) {
-                                        // console.log(file.name);
-                                        // tambah kolom nama file
-                                        var nama_doc = document.getElementById('nama_doc_' + fileUsulanId);
-                                        nama_doc.innerHTML = file.name;
-                                        // remove button upload file
-                                        var btnUploadDetail = document.getElementById('btnUploadDetail_' + fileUsulanId);
-                                        btnUploadDetail.remove();
-                                        // tambah progress terupload
-                                        var divElement = document.createElement('span');
-                                        divElement.classList.add('badge'); 
-                                        divElement.classList.add('text-success'); 
-                                        divElement.classList.add('bg-success-subtle'); 
-                                        divElement.classList.add('font-size-14'); 
-                                        
-                                        divElement.innerHTML = "complete";
-                                        
-                                        var container = document.getElementById('action_btn_' + fileUsulanId);
-                                        container.appendChild(divElement);
-                                        
-                                    });
-                                    }
+                                    script.onload = function() {
+                                            Dropzone.autoDiscover = false;
+                                            
+                                            var dropzoneId = "create-dropzone-" + fileUsulanId;
+                                            var myDropzone = new Dropzone("#" + dropzoneId, {
+                                            url: "{{ route('admin.fileUsulanDetail.uploadCreate') }}",
+                                            headers: {
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                            },
+                                            paramName: "file",
+                                            maxFiles: 50,
+                                            autoProcessQueue: true, // prevent automatic uploading
+                                            maxFilesize: 2, // Maximum file size in MB
+                                            addRemoveLinks: true,
+                                            acceptedFiles: ".pdf",
+                                            dictRemoveFile: 'Hapus',
+                                            init: function() {
+                                            this.on("sending", function(file, xhr, formData) {
+                                                
+                                                formData.append('file_usulans_id', fileUsulanId);
+                                                var trans_usulans_id = document.getElementById('trans_usulans_id').value;
+                                                formData.append('trans_usulans_id', trans_usulans_id);
+                                                                                    
+                                                var userId = document.getElementById('user_id').value;
+                                                formData.append('user_id', userId);
+                                                                                    
+                                                var nama_detail = document.getElementById('nama_detail').value;
+                                                formData.append('nama_detail', nama_detail);
+                                            });
+                                            this.on("complete", function (file) {
+                                                
+                                                const xhr = file.xhr;
+                                                console.log("xhr:", xhr);
+
+                                                if (xhr === undefined) {
+                                                    var alert = `<div class="alert alert-danger alert-dismissible alert-outline fade show mt-2" role="alert" style="margin-left:75px; width: 290px;">
+                                                                <strong>Gagal !</strong> - ukuran file terlalu besar
+                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                            </div>`;
+                                                    var nama_doc = document.getElementById('nama_doc_' + fileUsulanId);
+                                                    nama_doc.innerHTML = alert;
+
+                                                } else {
+                                                    const responseStatus = xhr.status;
+
+                                                    if (responseStatus === 200) {
+                                                        // tambah kolom nama file
+                                                        var nama_doc = document.getElementById('nama_doc_' + fileUsulanId);
+                                                        nama_doc.innerHTML = file.name;
+                                                        // remove button upload file
+                                                        var btnUploadDetail = document.getElementById('btnUploadDetail_' + fileUsulanId);
+                                                        btnUploadDetail.remove();
+                                                        // tambah progress terupload
+                                                        var divElement = document.createElement('span');
+                                                        divElement.classList.add('badge'); 
+                                                        divElement.classList.add('text-success'); 
+                                                        divElement.classList.add('bg-success-subtle'); 
+                                                        divElement.classList.add('font-size-14'); 
+                                                        
+                                                        divElement.innerHTML = "complete";
+                                                        
+                                                        var container = document.getElementById('action_btn_' + fileUsulanId);
+                                                        container.appendChild(divElement); 
+                                                    }
+
+                                                              
+                                                }
+                                            });
+                                            this.on("error", function (file, errorMessage) {
+                                                file.previewElement.classList.remove("dz-error");
+                                            });
+                                            this.on("addedfile", function(file, response) {
+
+                                            });
+                                        }
                                     });
                                                                 
                                     //   document.querySelector("#btnSimpanInput").addEventListener("click", function () {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Satuan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -17,9 +18,19 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->when(request()->q, function ($users) {
-            $users = $users->where('username', 'like', '%' . request()->q . '%');
-        })->paginate(10);
+        $user_id = auth()->user()->id;
+        $user_role = auth()->user()->role;
+
+        if ($user_role == 'Admin') {
+            $users = User::latest()->when(request()->q, function ($users) {
+                $users = $users->where('username', 'like', '%' . request()->q . '%');
+            })->paginate(10);
+                
+        } else {
+            $users = User::latest()->when(request()->q, function ($users) {
+                $users = $users->where('username', 'like', '%' . request()->q . '%');
+            })->where('id','=', $user_id)->paginate(10);
+        }
 
         return view('admin.user.index', compact('users'));
     }
@@ -55,23 +66,37 @@ class UserController extends Controller
             // 'avatar'    => 'required|image|mimes:jpeg,jpg,png|max:2000',
         ]);
 
-        // upload image
-        $avatar = $request->file('avatar');
-        $avatar->storeAs('public/users', $avatar->hashName());
-        // $avatar->storeAs('public/users', $avatar->getClientOriginalName());
+        if ($request->file('avatar') == '') {
+            $user = User::create([
+                'name'          => $request->input('name'),
+                'email'         => $request->input('email'),
+                'nik'           => $request->input('nik'),
+                'password'      => bcrypt($request->input('password')),
+                'satuans_id'    => $request->input('satuans_id'),
+                'role'          => $request->input('role')
+            ]);
 
-        $user = User::create([
-            'name'          => $request->input('name'),
-            'email'         => $request->input('email'),
-            'nik'           => $request->input('nik'),
-            'password'      => bcrypt($request->input('password')),
-            'satuans_id'    => $request->input('satuans_id'),
-            'avatar'        => $avatar->hashName(),
-            'role'          => $request->input('role')
-        ]);
+            //assign users
+            $user->save();
+        } else {
+            // upload image
+            $avatar = $request->file('avatar');
+            $avatar->storeAs('public/users', $avatar->hashName());
+            // $avatar->storeAs('public/users', $avatar->getClientOriginalName());
 
-        //assign users
-        $user->save();
+            $user = User::create([
+                'name'          => $request->input('name'),
+                'email'         => $request->input('email'),
+                'nik'           => $request->input('nik'),
+                'password'      => bcrypt($request->input('password')),
+                'satuans_id'    => $request->input('satuans_id'),
+                'avatar'        => $avatar->hashName(),
+                'role'          => $request->input('role')
+            ]);
+
+            //assign users
+            $user->save();
+        }
 
         if ($user) {
             return redirect()->route('admin.user.index')->with(['success' => 'Data Berhasil Disimpan!']);
@@ -99,7 +124,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $satuan = Satuan::latest()->get();
+        $satuan = Satuan::all();
 
         return view('admin.user.edit', compact('user', 'satuan'));
     }
@@ -148,7 +173,7 @@ class UserController extends Controller
                 'email'     => $request->input('email'),
                 'nik'       => $request->input('nik'),
                 'password'  => bcrypt($request->input('password')),
-                'cabang'    => $request->input('cabang'),
+                'satuans_id'    => $request->input('satuans_id'),
                 'avatar'    => $avatar->getClientOriginalName(),
                 'role'      => $request->input('role')
             ]);
@@ -169,14 +194,25 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        $foto_profil = $user->avatar;
+        $directory = 'public/users/';
+        $filePath = $directory . $foto_profil;
+
+        if ($foto_profil) {
+            Storage::delete($filePath);
+        }
+
+        $user->delete();
+
+        return response()->json(['success' => true]);
     }
 
     public function showImage($userId)
     {
         $user = User::findOrFail($userId);
 
-        $imagePath = ('public/users'.$user->avatar ); // Replace with the actual column name
+        $imagePath = ('public/users' . $user->avatar); // Replace with the actual column name
 
         $image = Storage::disk('public')->get($imagePath);
 

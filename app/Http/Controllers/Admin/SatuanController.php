@@ -129,6 +129,17 @@ class SatuanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $satuan = Satuan::findOrFail($id);
+        $satuan->delete();
+
+        if($satuan){
+            return response()->json([
+                'status' => 'success'
+            ]);
+        }else{
+            return response()->json([
+                'status' => 'error'
+            ]);
+        }
     }
 }

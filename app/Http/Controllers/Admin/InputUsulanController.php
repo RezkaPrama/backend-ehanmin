@@ -25,6 +25,8 @@ class InputUsulanController extends Controller
      */
     public function index(Request $request)
     {
+        $satuans_id_user = auth()->user()->satuans_id;
+        $role_user = auth()->user()->role;
         $query = TransUsulan::query();
 
         if ($request->has('nik')) {
@@ -43,7 +45,11 @@ class InputUsulanController extends Controller
             $query->orWhereBetween('tanggal_usulan', [$request->input('tanggal_usulan_dari'), $request->input('tanggal_usulan_sampai')]);
         }
 
-        $trans = $query->paginate(10);
+        if ($role_user != 'User') {
+            $trans = $query->orderBy('ke_pangkat', 'asc')->paginate(10);
+        } else {
+            $trans = $query->where('satuans_id', '=', $satuans_id_user)->orderBy('ke_pangkat', 'asc')->paginate(10);
+        }
 
         $satuans = Satuan::all();
 
@@ -110,6 +116,7 @@ class InputUsulanController extends Controller
             'ke_pangkat'        => $request->input('ke_pangkat'),
             'status'            => 'Selesai Input',
             'keterangan'        => $request->input('ket'),
+            'created_by'        => $request->input('created_by'),
 
         ]);
 
@@ -309,9 +316,36 @@ class InputUsulanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $userid, $name)
     {
-        //
+        $trans = TransUsulan::findOrFail($id);
+        $details = DB::table('file_usulan_details')
+            ->select('nama_file')
+            ->where('trans_usulans_id', '=', $id)
+            ->where('nama', '=', $name)
+            ->get();
+
+        foreach ($details as $value) {
+            $filename = $value->nama_file;
+            $destinationPath = 'public/documents'; 
+            $filePath = $destinationPath . '/' . $userid . '/' . $name . '/' . $filename;
+
+            if (Storage::exists($filePath)) {
+                Storage::delete($filePath);
+            }
+        }
+
+        $file_usulan_details = DB::table('file_usulan_details')
+            ->select('*')
+            ->where('trans_usulans_id', '=', $id)
+            ->delete();
+        
+        $trans->delete();
+
+        return response()->json([
+            'success' => true,
+            'data' => $filePath
+        ]);
     }
 
     /**
@@ -328,25 +362,34 @@ class InputUsulanController extends Controller
         $tanggal_usulan_dari = $request->input('tanggal_usulan_dari');
         $tanggal_usulan_sampai = $request->input('tanggal_usulan_sampai');
 
-        $query = TransUsulan::query();
+        // $query = TransUsulan::query();
 
-        if ($nik != null) {
-            $query->where('nik', $nik);
-        }
+        // if ($nik != null) {
+        //     $query->where('nik', $nik);
+        // }
 
-        if ($satuans_id != null) {
-            $query->where('satuans_id', $satuans_id);
-        }
+        // if ($satuans_id != null) {
+        //     $query->where('satuans_id', $satuans_id);
+        // }
 
-        if ($jenis_kenaikan_id != null) {
-            $query->where('jenis_kenaikan_id', $jenis_kenaikan_id);
-        }
+        // if ($jenis_kenaikan_id != null) {
+        //     $query->where('jenis_kenaikan_id', $jenis_kenaikan_id);
+        // }
 
-        if ($tanggal_usulan_dari && $tanggal_usulan_sampai) {
-            $query->orWhereBetween('tanggal_surat', [$tanggal_usulan_dari, $tanggal_usulan_sampai]);
-        }
+        // if ($tanggal_usulan_dari && $tanggal_usulan_sampai) {
+        //     $query->orWhereBetween('tanggal_surat', [$tanggal_usulan_dari, $tanggal_usulan_sampai]);
+        // }
 
-        $results = $query->get();
+        // $results = $query->get();
+
+        $results = DB::table('trans_usulans')
+            ->join('satuans', 'trans_usulans.satuans_id', '=', 'satuans.id')
+            ->join('jenis_kenaikans', 'trans_usulans.jenis_kenaikan_id', '=', 'jenis_kenaikans.id')
+            ->select('trans_usulans.id', 'trans_usulans.nik', 'trans_usulans.nama', 'trans_usulans.tanggal_usulan', 
+            'trans_usulans.periode', 'trans_usulans.tahun', 'satuans.nama_instansi as instansi',
+            'jenis_kenaikans.jenis_kenaikan as jenis kp', 'trans_usulans.ke_pangkat', 'trans_usulans.status', 'trans_usulans.keterangan',
+            'trans_usulans.created_at', 'trans_usulans.updated_at')
+            ->get();
 
         return Excel::download(new TransUsulanExport($results), 'surat_keluar.xlsx');
     }

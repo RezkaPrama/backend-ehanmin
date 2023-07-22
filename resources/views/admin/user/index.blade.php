@@ -27,7 +27,7 @@
                             <div class="col-sm">
                                 @if (auth()->user()->role == 'User')
                                     <div>
-                                        <a href="{{ route('admin.user.create') }}" type="button" class="btn btn-success mb-4 disabled"><i class="mdi mdi-plus me-1"></i> Tambah User</a>
+                                        <a href="{{ route('admin.user.create') }}" type="button" class="btn btn-success mb-4" style="display: none"><i class="mdi mdi-plus me-1"></i> Tambah User</a>
                                         {{-- <button type="button" class="btn btn-success mb-4" data-bs-toggle="modal"
                                             data-bs-target="#addInvoiceModal"><i class="mdi mdi-plus me-1"></i> Tambah User</button> --}}
                                     </div>
@@ -100,7 +100,7 @@
                 </div>
             </header> --}}
             <!-- card-header end// -->
-
+            
             <!-- card-body start// -->
             <div class="card-body mt-4">
                 <div class="row">
@@ -117,11 +117,12 @@
                                                         id="checkboxesMain" />
                                                 </div>
                                             </th> --}}
-                                            <th class="text-center">User Id</th>
+                                            <th class="text-center">No</th>
+                                            {{-- <th class="text-center">User Id</th> --}}
                                             <th class="text-center">User name</th>
-                                            <th class="text-center">NIK User</th>
+                                            <th class="text-center">NRP/NIP User</th>
                                             <th class="text-center">User Role</th>
-                                            <th class="text-center">Cabang</th>
+                                            {{-- <th class="text-center">Instansi</th> --}}
                                             <th class="text-center">Foto Profil</th>
                                             <th class="text-end">Action</th>
                                         </tr>
@@ -136,11 +137,12 @@
                                                         />
                                                 </div>
                                             </td> --}}
-                                            <td class="text-center">{{ $member->id }}</td>
+                                            <td class="text-center">{{ $item + 1 }}</td>
+                                            {{-- <td class="text-center">{{ $member->id }}</td> --}}
                                             <td class="text-center">{{ $member->name }}</td>
                                             <td class="text-center">{{ $member->nik }}</td>
                                             <td class="text-center"><span class="badge bg-success font-size-12"><i class="mdi mdi-star me-1"></i>{{ $member->role }}</span></td>
-                                            <td class="text-center">{{ $member->cabang }}</td>
+                                            {{-- <td class="text-center">{{ $member->nama_instansi }}</td> --}}
                                             <td class="text-center">
                                                 <img class="rounded-circle header-profile-user" src="{{ (isset($member->avatar) && $member->avatar != '')  ? url('/storage/users/'. $member->avatar ) : asset('/assets/images/users/avatar-1.jpeg') }}" alt="Header Avatar">
                                             </td>
@@ -152,13 +154,15 @@
                                                     </a>
                                                     @if (auth()->user()->role == 'User')
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                        {{-- <li><a class="dropdown-item" href="#">View detail</a></li> --}}
-                                                        <li><a class="dropdown-item disabled" href="{{ route('admin.user.edit', $member->id) }}">Edit User</a></li>
+                                                        <li><a class="dropdown-item" href="{{ route('admin.user.edit', $member->id) }}">Edit User</a></li>
                                                     </ul>
                                                     @else
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                        {{-- <li><a class="dropdown-item" href="#">View detail</a></li> --}}
-                                                        <li><a class="dropdown-item" href="{{ route('admin.user.edit', $member->id) }}">Edit User</a></li>
+                                                        <li class="text-center"><a class="dropdown-item" href="{{ route('admin.user.edit', $member->id) }}">Edit User</a></li>
+                                                        <li class="text-center">
+                                                            <button class="btn btn-sm btn-danger btn-delete"
+                                                                data-id="{{ $member->id }}">Hapus User</button>
+                                                        </li>
                                                     </ul>
                                                     @endif
                                                     
@@ -466,6 +470,57 @@
 
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+    
+    $(document).on('click', '.btn-delete', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Anda yakin ingin menghapus data ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                $.ajax({
+                    url: '/admin/user/' + id, 
+                    type: 'DELETE',
+                    dataType: 'json',
+                    data: {
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function (data) {
+                        
+                        Swal.fire(
+                            'Sukses!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        ).then(() => {
+                            
+                            window.location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan saat menghapus data.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function() {
 

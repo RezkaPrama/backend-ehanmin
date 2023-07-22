@@ -58,6 +58,6 @@ class TransUsulan extends Model
 
      public function fileUsulanDetail()
      {
-         return $this->hasOne(FileUsulanDetail::class);
+         return $this->hasMany(FileUsulanDetail::class);
      }
 }

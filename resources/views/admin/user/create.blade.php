@@ -59,14 +59,14 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="nik">NIK</label>
+                                <label class="form-label" for="nik">NRP/NIP</label>
                                 <input id="nik" name="nik" placeholder="Masukan NIK" type="text"
                                     class="form-control @error('nik') is-invalid @enderror">
 
                                 @error('nik')
                                 <div class="invalid-feedback" style="display: block">
-                                    {{-- Kolom NIK harus di isi! --}}
-                                    {{ $message }}
+                                    Kolom NRP/NIP harus di isi!
+                                    {{-- {{ $message }} --}}
                                 </div>
                                 @enderror
                             </div>
@@ -75,10 +75,10 @@
                                 <div class="col-lg-6">
 
                                     <div class="mb-3">
-                                        <label for="choices-single-specifications" class="form-label">Cabang Satuan</label>
+                                        <label for="choices-single-specifications" class="form-label">Instansi</label>
                                         <select class="form-control @error('satuans_id') is-invalid @enderror"
                                             data-trigger name="satuans_id" id="satuans_id">
-                                            <option value="">Pilih Cabang Satuan</option>
+                                            <option value="">Pilih Satuan</option>
                                             @foreach ($satuan as $item)
                                             <option value="{{ $item->id }}">{{ $item->nama_satuan }} - {{ $item->lokasi }}</option>
                                             @endforeach

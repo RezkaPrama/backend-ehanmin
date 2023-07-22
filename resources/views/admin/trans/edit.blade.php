@@ -295,11 +295,11 @@
                                                 </td>
                                             @else
                                                 <td class="text-center">
-                                                    <a href="{{ route('admin.fileUsulanDetail.download', ['userid' => auth()->user()->id, 'filename' => $row->nama_file, 'name' => $trans->nama ]) }}"
+                                                    <a href="{{ route('admin.fileUsulanDetail.download', ['userid' => $trans->created_by, 'filename' => $row->nama_file, 'name' => $trans->nama ]) }}"
                                                         class="btn btn-primary w-sm"><i class="bx bx-download me-2"></i>Download</a>
-                                                    <a href="{{ route('admin.fileUsulanDetail.previewPDF', ['filename' => $row->nama_file, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
+                                                    <a href="{{ route('admin.fileUsulanDetail.previewPDF', ['filename' => $row->nama_file, 'userid' => $trans->created_by, 'name' => $trans->nama ]) }}"
                                                         class="btn btn-dark w-sm"><i class="bx bxs-file-pdf me-2"></i>Preview</a>
-                                                    <a href="{{ route('admin.fileUsulanDetail.destroy', ['nama_file' => $row->nama_file, 'userid' => auth()->user()->id, 'name' => $trans->nama ]) }}"
+                                                    <a href="{{ route('admin.fileUsulanDetail.destroy', ['nama_file' => $row->nama_file, 'userid' => $trans->created_by, 'name' => $trans->nama ]) }}"
                                                         class="btn btn-danger w-sm"><i class="bx bxs-eraser-pdf me-2"></i>Hapus</a>
                                                 </td>
                                             @endif
@@ -367,7 +367,7 @@
                             <input id="user_id" name="user_id" type="hidden" class="form-control">
                             <input id="nama_detail" name="nama_detail" type="hidden" class="form-control">
 
-                            <label class="form-label" for="productdesc">Dokumen</label>
+                            <label class="form-label" for="productdesc">Dokumen (file format pdf dan tidak melebihi 2 Mb)</label>
 
                             <input type="file" name="nama_file" accept="application/pdf"
                                 class="form-control @error('nama_file') is-invalid @enderror">

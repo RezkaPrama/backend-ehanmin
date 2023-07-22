@@ -27,8 +27,9 @@
                             <div class="col-sm">
                                 @if (auth()->user()->role == 'User')
                                 <div>
-                                    <a href="{{ route('admin.satuan.create') }}" class="btn btn-success mb-4 disabled"><i
-                                            class="mdi mdi-plus me-1"></i> Tambah</a>
+                                    <a href="{{ route('admin.satuan.create') }}"
+                                        class="btn btn-success mb-4 disabled"><i class="mdi mdi-plus me-1"></i>
+                                        Tambah</a>
                                 </div>
                                 @else
                                 <div>
@@ -36,7 +37,7 @@
                                             class="mdi mdi-plus me-1"></i> Tambah</a>
                                 </div>
                                 @endif
-                               
+
                             </div>
                         </div>
                         <!-- end row -->
@@ -107,30 +108,21 @@
                                                                 href="{{ route('admin.satuan.edit', $row->id) }}">Edit
                                                                 Satuan</a></li>
                                                         <li>
-                                                            {{-- <a id="{{ $row->id }}" onClick="Delete(this.id)"
-                                                                class="dropdown-item">Hapus Satuan</a> --}}
-                                                            {{-- <button onClick="Delete($row->id )"
-                                                                class="btn btn-sm btn-danger" id="{{ $row->id }}">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-                                                        </li> --}}
-                                                    </ul>    
+
+                                                    </ul>
                                                     @else
                                                     <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li><a class="dropdown-item"
+                                                        <li class="text-center"><a class="dropdown-item"
                                                                 href="{{ route('admin.satuan.edit', $row->id) }}">Edit
                                                                 Satuan</a></li>
                                                         <li>
-                                                            {{-- <a id="{{ $row->id }}" onClick="Delete(this.id)"
-                                                                class="dropdown-item">Hapus Satuan</a> --}}
-                                                            {{-- <button onClick="Delete($row->id )"
-                                                                class="btn btn-sm btn-danger" id="{{ $row->id }}">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-                                                        </li> --}}
+                                                        <li class="text-center">
+                                                            <button class="btn btn-sm btn-danger btn-delete"
+                                                                data-id="{{ $row->id }}">Hapus User</button>
+                                                        </li>
                                                     </ul>
                                                     @endif
-                                                    
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -435,6 +427,56 @@
 
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    
+    $(document).on('click', '.btn-delete', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Anda yakin ingin menghapus data ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                $.ajax({
+                    url: '/admin/satuan/' + id, 
+                    type: 'DELETE',
+                    dataType: 'json',
+                    data: {
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function (data) {
+                        
+                        Swal.fire(
+                            'Sukses!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        ).then(() => {
+                            
+                            window.location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan saat menghapus data.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function() {
 

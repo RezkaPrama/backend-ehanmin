@@ -36,6 +36,7 @@ Route::prefix('admin')->group(function () {
         //route User
         Route::resource('/user', UserController::class, ['as' => 'admin']);
         Route::get('/user/{userId}', [UserController::class, 'showImage'])->name('admin.user.showImage');
+        Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('admin.user.getEdit');
 
         //route Satuan
         Route::resource('/satuan', SatuanController::class, ['as' => 'admin']);
@@ -51,6 +52,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/trans/approve/{id}', [InputUsulanController::class, 'approve'])->name('admin.trans.approve');
         Route::get('/trans/decline/{id}', [InputUsulanController::class, 'decline'])->name('admin.trans.decline');
         Route::get('/trans/exportExcel/{userid}', [InputUsulanController::class, 'exportExcel'])->name('admin.trans.exportExcel');
+        Route::delete('/trans/{id}/{userid}/{name}', [InputUsulanController::class, 'destroy'])->name('admin.trans.delete');
 
         //route File usulan detail 
         Route::post('/fileUsulanDetail/upload', [FileUsulanDetailController::class, 'upload'])->name('admin.fileUsulanDetail.upload');

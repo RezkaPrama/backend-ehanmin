@@ -18,7 +18,6 @@
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
-
             <div class="card-header">
                 <form action="{{ route('admin.trans.index') }}" method="GET">
 
@@ -33,7 +32,7 @@
                         <label class="col-sm-2 col-form-label">Instansi</label>
                         <div class="col-sm-4">
                             <select class="form-control " data-trigger id="satuans_id" name="satuans_id">
-                                {{-- <option value="">Pilih Satuan</option> --}}
+                                
                                 <option value="">Semua Instansi</option>
                                 @foreach ($satuans as $satuan)
                                 <option value="{{ $satuan->id }}">{{ $satuan->nama_instansi }} - {{ $satuan->nama_satuan
@@ -44,8 +43,7 @@
                     </div>
 
                     {{-- <label class="col-sm-2 col-form-label">user id</label> --}}
-                    <input id="userid" name="userid" type="hidden" value="{{auth()->user()->id}}"
-                    class="form-control ">
+                    <input id="userid" name="userid" type="hidden" value="{{auth()->user()->id}}" class="form-control ">
 
                     <div class="mb-3 row">
                         <label class="col-sm-2 col-form-label">Jenis KP</label>
@@ -71,12 +69,15 @@
                         <button type="submit" class="btn btn-success mb-4 col-sm-2 me-1"><i
                                 class="mdi mdi-filter me-1"></i>
                             Filter</button>
-                        <a id="export-excel" class="btn btn-success mb-4 col-sm-2 "><i class="mdi mdi-microsoft-excel me-1"></i> Export</a>
+                        <a id="export-excel" class="btn btn-success mb-4 col-sm-2 "><i
+                                class="mdi mdi-microsoft-excel me-1"></i> Export</a>
                     </div>
+
                     <div class="text-end">
                         <a href="{{ route('admin.trans.create') }}" class="btn btn-success mb-4"><i
                                 class="mdi mdi-plus me-1"></i> Tambah Input Usulan</a>
                     </div>
+                    
                 </form>
             </div>
 
@@ -85,7 +86,7 @@
 
             </div> --}}
             <!-- card-header default end// -->
-
+            
             <!-- card-body start// -->
             <div class="card-body">
                 <div class="row">
@@ -113,7 +114,13 @@
                                             <th>ke Pangkat</th>
                                             <th>Status</th>
                                             <th>Keterangan</th>
-                                            <th class="text-center">Action</th>
+                                            <th class="text-center">Upload</th>
+                                            @if (auth()->user()->role === 'User')
+                                                <th class="text-center" style="display: none">Action</th>
+                                            @else
+                                                <th class="text-center">Action</th>
+                                            @endif
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -169,6 +176,25 @@
                                                 <a href="{{ route('admin.trans.edit', $row->id) }}"><i
                                                         class="bx bx-upload icon nav-icon"></i></a>
                                             </td>
+
+                                            @if (auth()->user()->role === 'User')
+
+                                                <td class="text-center" style="display: none">
+                                                    <button class="btn btn-sm btn-danger btn-delete" style="width: 100px;"
+                                                        data-id="{{ $row->id }}" data-userid="{{ $row->created_by }}" 
+                                                        data-nama="{{ $row->nama }}"
+                                                        >Hapus User</button>
+                                                </td>
+                                            @else
+                                                <td class="text-center">
+                                                    <button class="btn btn-sm btn-danger btn-delete" style="width: 100px;"
+                                                        data-id="{{ $row->id }}" data-userid="{{ $row->created_by }}" 
+                                                        data-nama="{{ $row->nama }}"
+                                                        >Hapus User</button>
+                                                </td>
+                                            @endif
+                                            
+                                            
                                         </tr>
                                         @empty
                                         <div class="alert alert-danger">
@@ -386,6 +412,59 @@
 <script src="{{ asset('assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+    
+    $(document).on('click', '.btn-delete', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var userid = $(this).data('userid');
+        var nama = $(this).data('nama');
+
+        Swal.fire({
+            title: 'Konfirmasi',
+            text: 'Anda yakin ingin menghapus data ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+                $.ajax({
+                    url: '/admin/trans/' + id + '/' + userid + '/' + nama, 
+                    type: 'DELETE',
+                    dataType: 'json',
+                    data: {
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        Swal.fire(
+                            'Sukses!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        ).then(() => {
+                            
+                            window.location.reload();
+                        });
+                    },
+                    error: function (data) {
+                        
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan saat menghapus data.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function() {
 

@@ -25,6 +25,7 @@ class CreateTransUsulansTable extends Migration
             $table->string('ke_pangkat');
             $table->string('status');
             $table->string('keterangan')->nullable();
+            $table->bigInteger('created_by');
             $table->timestamps();
         });
     }

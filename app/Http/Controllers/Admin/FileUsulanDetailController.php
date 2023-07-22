@@ -108,6 +108,10 @@ class FileUsulanDetailController extends Controller
      */
     public function upload(Request $request)
     {
+        $this->validate($request, [
+            'nama_file'    => 'required|mimes:pdf|max:3000',
+        ]);
+
         if ($request->file('nama_file') !== null) {
 
             $user_id = $request->input('user_id');

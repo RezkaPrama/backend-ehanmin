@@ -43,6 +43,7 @@
                 </div>
             </div>
             <!-- card-header default end// -->
+            {{$rawManageFile}}
 
             <!-- card-body start// -->
             <div class="card-body mt-4">
@@ -77,7 +78,8 @@
                                                 </div>
                                             </td> --}}
                                             <td>{{ $item + 1 }}</td>
-                                            <td>{{ $row->jenisKenaikan->jenis_kenaikan }}</td>
+                                            {{-- <td>{{ $row->jenisKenaikan->jenis_kenaikan }}</td> --}}
+                                            <td>{{ $row->jenis_kenaikan }}</td>
                                             <td><span class="badge bg-success font-size-12"><i class="mdi mdi-check me-1"></i>{{ $row->ke_pangkat}}</span>
                                             </td>
                                             <td>{{ $row->nama_dokumen }}</td>
@@ -90,27 +92,27 @@
                                                     </a>
 
                                                     @if (auth()->user()->role == 'User')
-                                                    <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li><a class="dropdown-item disabled"
-                                                                href="{{ route('admin.manageFile.edit', $row->id) }}">Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" class="dropdown-item disabled"
-                                                                data-id="{{ $row->id }}" id="destroy">Hapus</button>
-                                                        </li>
-                                                    </ul>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item disabled"
+                                                                    href="{{ route('admin.manageFile.edit', $row->id) }}">Edit
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <button type="button" class="dropdown-item disabled"
+                                                                    data-id="{{ $row->id }}" id="destroy">Hapus</button>
+                                                            </li>
+                                                        </ul>
                                                     @else
-                                                    <ul class="dropdown-menu dropdown-menu-end">
-                                                        <li><a class="dropdown-item"
-                                                                href="{{ route('admin.manageFile.edit', $row->id) }}">Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <button type="button" class="dropdown-item"
-                                                                data-id="{{ $row->id }}" id="destroy">Hapus</button>
-                                                        </li>
-                                                    </ul>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item"
+                                                                    href="{{ route('admin.manageFile.edit', $row->id) }}">Edit
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <button type="button" class="dropdown-item"
+                                                                    data-id="{{ $row->id }}" id="destroy">Hapus</button>
+                                                            </li>
+                                                        </ul>
                                                     @endif
                                                     
                                                 </div>

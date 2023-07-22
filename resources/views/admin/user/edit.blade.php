@@ -12,7 +12,7 @@
 @slot('li_1') Manajemen User @endslot
 @slot('title') Edit User @endslot
 @endcomponent
-
+{{-- {{$user}} --}}
 <div class="row">
     <div class="col-lg-12">
         <div id="addproduct-accordion" class="custom-accordion">
@@ -33,16 +33,18 @@
                         </div>
                     </div>
                 </a>
-                
+
                 <div id="addproduct-productinfo-collapse" class="collapse show" data-bs-parent="#addproduct-accordion">
                     <div class="p-4 border-top">
-                        <form action="{{ route('admin.user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.user.update', $user->id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
                             <div class="mb-3">
                                 <label class="form-label" for="name">Nama Lengkap</label>
-                                <input id="name" value="{{ old('name', $user->name) }}" name="name" placeholder="Masukan Nama Lengkap" type="text"
+                                <input id="name" value="{{ old('name', $user->name) }}" name="name"
+                                    placeholder="Masukan Nama Lengkap" type="text"
                                     class="form-control @error('name') is-invalid @enderror">
 
                                 @error('name')
@@ -53,36 +55,42 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label" for="nik">NIK</label>
-                                <input id="nik" name="nik" placeholder="Masukan NIK" type="text" value="{{ old('nik', $user->nik) }}"
+                                <label class="form-label" for="nik">NRP/NIP</label>
+                                <input id="nik" name="nik" placeholder="Masukan NIK" type="text"
+                                    value="{{ old('nik', $user->nik) }}"
                                     class="form-control @error('nik') is-invalid @enderror">
 
                                 @error('nik')
                                 <div class="invalid-feedback" style="display: block">
-                                    {{-- Kolom NIK harus di isi! --}}
-                                    {{ $message }}
+                                    Kolom NRP/NIP harus di isi!
                                 </div>
                                 @enderror
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-6">
 
+                                @if (auth()->user()->role == 'User')
+                                <div class="col-lg-6">
                                     <div class="mb-3">
-                                        <label for="choices-single-specifications" class="form-label">Cabang Satuan</label>
-                                        <select class="form-control @error('satuans_id') is-invalid @enderror"
-                                            data-trigger name="satuans_id" id="satuans_id">
-                                            <option value="">Pilih Cabang Satuan</option>
+                                        <label for="choices-single-specifications" class="form-label">Instansi</label>
+                                        <select class="form-control @error('satuans_id') is-invalid @enderror" disabled
+                                            data-trigger name="satuans_id_edit" id="satuans_id_edit">
+                                            <option value="">Pilih Instansi</option>
 
                                             @foreach ($satuan as $item)
-                                                @if($user->satuans_id == $item->id)
-                                                    <option value="{{ $item->id  }}" selected>{{ $item->nama_satuan }} - {{ $item->lokasi }}</option>
-                                                @else
-                                                    <option value="{{ $item->id  }}">{{ $item->nama_satuan }} - {{ $item->lokasi }}</option>
-                                                @endif
+                                            @if($user->satuans_id == $item->id)
+                                            <option value="{{ $item->id  }}" selected>{{ $item->nama_satuan }} - {{
+                                                $item->lokasi }}</option>
+                                            @else
+                                            <option value="{{ $item->id  }}">{{ $item->nama_satuan }} - {{ $item->lokasi
+                                                }}</option>
+                                            @endif
                                             @endforeach
                                         </select>
-    
+                                        <input id="satuans_id" name="satuans_id" type="hidden"
+                                            value="{{ old('satuans_id', $user->satuans_id) }}"
+                                            class="form-control @error('satuans_id') is-invalid @enderror">
+
                                         @error('satuans_id')
                                         <div class="invalid-feedback" style="display: block">
                                             {{ $message }}
@@ -90,16 +98,71 @@
                                         @enderror
                                     </div>
                                 </div>
+                                @else
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="choices-single-specifications" class="form-label">Instansi</label>
+                                       
+                                        <select class="form-control @error('satuans_id') is-invalid @enderror"
+                                            data-trigger name="satuans_id" id="satuans_id">
+                                            <option value="">Pilih Instansi</option>
 
+                                            @foreach ($satuan as $item)
+                                            @if($user->satuans_id == $item->id)
+                                            <option value="{{ $item->id  }}" selected>{{ $item->nama_satuan }} - {{
+                                                $item->lokasi }}</option>
+                                            @else
+                                            <option value="{{ $item->id  }}">{{ $item->nama_satuan }} - {{ $item->lokasi
+                                                }}</option>
+                                            @endif
+                                            @endforeach
+                                        </select>
+                                        @error('satuans_id')
+                                        <div class="invalid-feedback" style="display: block">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                @endif
+
+                                @if (auth()->user()->role == 'User')
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="choices-single-specifications" class="form-label">Role</label>
+                                        <select class="form-control @error('role') is-invalid @enderror" data-trigger disabled
+                                            name="role_edit" id="role_edit">
+                                            <option value="">Pilih Role User</option>
+                                            <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin
+                                            </option>
+                                            <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User
+                                            </option>
+                                        </select>
+
+                                        <input id="role" name="role" type="hidden"
+                                        value="{{ old('role', $user->role) }}"
+                                        class="form-control @error('role') is-invalid @enderror">
+
+                                        @error('role')
+                                        <div class="invalid-feedback" style="display: block">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+
+                                </div>
+                                @else
                                 <div class="col-lg-6">
 
                                     <div class="mb-3">
                                         <label for="choices-single-specifications" class="form-label">Role</label>
-                                        <select class="form-control @error('role') is-invalid @enderror"
-                                            data-trigger name="role" id="role">
+                                        <select class="form-control @error('role') is-invalid @enderror" data-trigger
+                                            name="role" id="role">
                                             <option value="">Pilih Role User</option>
-                                            <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin</option>
-                                            <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User</option>
+                                            <option value="Admin" {{ $user->role == 'Admin' ? 'selected' : '' }}>Admin
+                                            </option>
+                                            <option value="User" {{ $user->role == 'User' ? 'selected' : '' }}>User
+                                            </option>
                                         </select>
 
                                         @error('role')
@@ -110,11 +173,14 @@
                                     </div>
 
                                 </div>
+                                @endif
+                                
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="email"> Email</label>
-                                <input id="email" value="{{ old('email', $user->email) }}" name="email" placeholder="Masukan email" type="text"
+                                <input id="email" value="{{ old('email', $user->email) }}" name="email"
+                                    placeholder="Masukan email" type="text"
                                     class="form-control @error('email') is-invalid @enderror">
 
                                 @error('email')
@@ -162,6 +228,7 @@
                             </div>
                     </div>
                 </div>
+
             </div>
 
         </div>

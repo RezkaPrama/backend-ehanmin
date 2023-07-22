@@ -17,7 +17,7 @@ class JenisKenaikanController extends Controller
     {
         $jenis_kenaikan = JenisKenaikan::latest()->when(request()->q, function($jenis_kenaikan) {
             $jenis_kenaikan = $jenis_kenaikan->where('jenis_kenaikan', 'like', '%'. request()->q .'%');
-        })->orderBy('id', 'desc')->paginate(10);
+        })->orderBy('ke_pangkat', 'desc')->paginate(10);
 
         return view('admin.jenis_kp.index', compact('jenis_kenaikan'));
     }

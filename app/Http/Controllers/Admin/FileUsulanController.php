@@ -18,11 +18,28 @@ class FileUsulanController extends Controller
      */
     public function index()
     {
-        $manageFile = FileUsulan::latest()->when(request()->q, function ($jenis) {
-            $jenis = $jenis->where('id', 'like', '%' . request()->q . '%');
-        })->paginate(10);
+        // $manageFile = FileUsulan::latest()->when(request()->q, function ($jenis) {
+        //     $jenis = $jenis->where('id', 'like', '%' . request()->q . '%');
+        // })->orderBy('ke_pangkat', 'asc')->paginate(10);
 
-        return view('admin.manageFile.index', compact('manageFile'));
+        $manageFile = DB::table('file_usulans')
+            ->join('jenis_kenaikans', 'file_usulans.jenis_kenaikan_id', '=', 'jenis_kenaikans.id')
+            ->select('*')
+            ->orderBy('file_usulans.ke_pangkat', 'asc')->paginate(10);
+
+        $rawManageFile = DB::table('file_usulans')
+            ->join('jenis_kenaikans', 'file_usulans.jenis_kenaikan_id', '=', 'jenis_kenaikans.id')
+            ->select('*')
+            ->orderBy('file_usulans.ke_pangkat', 'asc')->get();
+
+        // $manageFile = FileUsulan::latest()->when(request()->q, function ($jenis) {
+        //     $jenis = $jenis->where('id', 'like', '%' . request()->q . '%');
+        // })->orderBy('ke_pangkat', 'asc')->paginate(10);
+
+        // $manageFile = FileUsulan::latest()->orderBy('ke_pangkat', 'asc')->paginate(10);
+
+        return view('admin.manageFile.index', compact('manageFile', 'rawManageFile'));
+        // return view('admin.manageFile.index', ['manageFile' => $manageFile]);
     }
 
     /**
